@@ -1,0 +1,81 @@
+import Vue from 'vue'
+import axios from 'axios'
+import VueRouter from 'vue-router'
+import ElementUI from 'element-ui'
+import './assets/reset.css'
+import 'element-ui/lib/theme-default/index.css'
+
+import App from './App'
+import login from './views/login'
+
+import indexS from './views/Student/indexS'
+import noticeS from './views/Student/noticeS'
+import workDoingS from './views/Student/workS/workDoingS'
+import workDoneS from './views/Student/workS/workDoneS'
+import workFinishS from './views/Student/workS/workFinishS'
+import paperS from './views/Student/workS/paperS'
+import passwordS from './views/Student/passwordS'
+
+import indexT from './views/Teacher/indexT'
+import noticeT from './views/Teacher/noticeT'
+import addTopicT from './views/Teacher/topicT/addTopicT'
+import queryTopicT from './views/Teacher/topicT/queryTopicT'
+import addWorkT from './views/Teacher/workT/addWorkT'
+import queryWorkT from './views/Teacher/workT/queryWorkT'
+import workT from './views/Teacher/workT/workT'
+import checkingWorkT from './views/Teacher/workT/checkingWorkT'
+import checkedWorkT from './views/Teacher/workT/checkedWorkT'
+import passwordT from './views/Teacher/passwordT'
+
+import indexA from './views/Admin/indexA'
+import operateTeacherA from './views/Admin/operateTeacherA'
+import operateStudentA from './views/Admin/operateStudentA'
+import passwordA from './views/Admin/passwordA'
+
+Vue.use(ElementUI)
+Vue.use(VueRouter)
+Vue.prototype.$http = axios
+Vue.prototype.$http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// Vue.prototype.$http.defaults.withCredentials = true
+
+Vue.config.productionTip = false
+
+
+const router = new VueRouter({ 
+  routes: [
+    { path: '/', component: login },
+    { path: '/Student', component: indexS, 
+      children: [
+        { path: 'noticeS', component: noticeS },
+        { path: 'workDoingS', component: workDoingS },
+        { path: 'workDoneS', component: workDoneS },
+        { path: 'workFinishS', component: workFinishS },
+        { path: 'paperS', component: paperS, name:'paperS' },
+        { path: 'passwordS', component: passwordS }      
+      ]},
+    { path: '/Teacher', component: indexT,
+      children: [
+        { path: 'noticeT', component: noticeT },
+        { path: 'addTopicT', component: addTopicT },
+        { path: 'queryTopicT', component: queryTopicT },
+        { path: 'addWorkT', component: addWorkT },
+        { path: 'queryWorkT', component: queryWorkT },
+        { path: 'workT', component: workT, name: 'workT' },
+        { path: 'checkingWorkT', component: checkingWorkT },
+        { path: 'checkedWorkT', component: checkedWorkT },
+        { path: 'passwordT', component: passwordT },
+      ]},
+      { path: '/Admin', component: indexA,
+        children: [
+          { path: 'operateTeacherA', component: operateTeacherA},
+          { path: 'operateStudentA', component: operateStudentA},
+          { path: 'passwordA', component: passwordA }
+        ]}
+] })
+
+new Vue({
+  el: '#app',
+  router,
+  render: h => h(App)
+})
+
