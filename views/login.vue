@@ -1,14 +1,16 @@
 <template>
   <div class="wrapper">
     <div class="loginWrapper">
-      <el-input class="input" v-model="user_name" placeholder="学号" icon="more" size="large"
-                style="margin-top: 150px;"></el-input>
-      <el-input class="input" v-model="password" type="password" placeholder="密码"
-                size="large"></el-input>
-      <br><br>
-      <el-switch class="switch" :width=120 v-model="mark" on-text="记住用户" off-text="取消记住用户"
-                 on-color="#13CE66" :change="save()"></el-switch>
-      <br>
+      <div class="input_wrapper">
+        <el-input class="input" v-model="user_name" placeholder="学号" icon="more" size="large"
+                  style="margin-top: 150px;"></el-input>
+        <el-input class="input" v-model="password" type="password" placeholder="密码"
+                  size="large"></el-input>
+        <br><br>
+        <el-switch class="switch" :width=85 v-model="mark" on-text="记住用户" off-text=""
+                   on-color="#13CE66" :change="save()"></el-switch>
+      </div>
+      <br><br><br><br>
       <el-button class="button" size="large" type="success" v-on:click="login()">登录</el-button>
     </div>
   </div>
@@ -118,17 +120,22 @@
   .wrapper {
     width: 100%;
     height: 100%;
-    background: url("../assets/login.jpg");
+    background: url("/static/login.jpg");
     background-size: 100% 100%;;
   }
 
   .loginWrapper {
     width: 400px;
     height: 500px;
-    background: rgba(255, 255, 255, 0);
     margin: 0 auto;
     position: relative;
     top: 100px;
+  }
+
+  .input_wrapper {
+    width: 300px;
+    margin: 0 auto;
+    position: relative;
   }
 
   .input {
@@ -138,10 +145,11 @@
 
   .button {
     width: 200px;
-    margin-top: 50px;
   }
 
-  /*.switch {*/
-    /*position: relative;*/
-  /*}*/
+  .switch {
+    position: relative;
+    float: left;
+  }
+
 </style>

@@ -27,31 +27,31 @@ import checkingWorkT from './views/Teacher/workT/checkingWorkT'
 import checkedWorkT from './views/Teacher/workT/checkedWorkT'
 import passwordT from './views/Teacher/passwordT'
 
-import indexA from './views/Admin/indexA'
-import operateTeacherA from './views/Admin/operateTeacherA'
-import operateStudentA from './views/Admin/operateStudentA'
-import passwordA from './views/Admin/passwordA'
+import index from './views/Admin/index'
+import teacher_mgr from './views/Admin/teacher_mgr'
+import student_mgr from './views/Admin/student_mgr'
+import password from './views/Admin/password'
 
-Vue.use(ElementUI)
-Vue.use(VueRouter)
-Vue.prototype.$http = axios
+Vue.use(ElementUI);
+Vue.use(VueRouter);
+Vue.prototype.$http = axios;
 Vue.prototype.$http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 // Vue.prototype.$http.defaults.withCredentials = true
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 
-const router = new VueRouter({ 
+const router = new VueRouter({
   routes: [
     { path: '/', component: login },
-    { path: '/Student', component: indexS, 
+    { path: '/Student', component: indexS,
       children: [
         { path: 'noticeS', component: noticeS },
         { path: 'workDoingS', component: workDoingS },
         { path: 'workDoneS', component: workDoneS },
         { path: 'workFinishS', component: workFinishS },
         { path: 'paperS', component: paperS, name:'paperS' },
-        { path: 'passwordS', component: passwordS }      
+        { path: 'passwordS', component: passwordS }
       ]},
     { path: '/Teacher', component: indexT,
       children: [
@@ -65,17 +65,17 @@ const router = new VueRouter({
         { path: 'checkedWorkT', component: checkedWorkT },
         { path: 'passwordT', component: passwordT },
       ]},
-      { path: '/Admin', component: indexA,
+      { path: '/Admin', component: index,
         children: [
-          { path: 'operateTeacherA', component: operateTeacherA},
-          { path: 'operateStudentA', component: operateStudentA},
-          { path: 'passwordA', component: passwordA }
+          { path: 'teacher_mgr', component: teacher_mgr},
+          { path: 'student_mgr', component: student_mgr},
+          { path: 'password', component: password }
         ]}
-] })
+] });
 
 new Vue({
   el: '#app',
   router,
   render: h => h(App)
-})
+});
 
