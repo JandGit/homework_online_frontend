@@ -6,7 +6,7 @@
     <el-table class="table" :data="queryTeachers" border>
       <el-table-column label="教师编号" width="180" prop="t_id"></el-table-column>
       <el-table-column label="教师姓名" width="180" prop="t_name"></el-table-column>
-      <el-table-column label="管理班级" width="200" prop="class_name_list"></el-table-column>
+      <el-table-column label="管理班级" width="200" prop="class_names"></el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
           <el-button size="small" type="success" v-on:click="openAlter(scope.$index, scope.row)">编辑</el-button>
@@ -24,7 +24,7 @@
           <el-input v-model="new_teacher.t_name" :maxlength=30></el-input>
         </el-form-item>
         <el-form-item label="面向班级：" label-width="100px">
-          <el-select v-model="new_teacher.class_list" multiple placeholder="请选择班级" size="large">
+          <el-select v-model="new_teacher.class_id_list" multiple placeholder="请选择班级" size="large">
             <el-option v-for="item in all_class_list" :label="item.class_name" :value="item.class_id" :key="item.class_id">
             </el-option>
           </el-select>
@@ -45,7 +45,7 @@
           <el-input v-model="alterTeacher.t_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="面向班级：" label-width="100px">
-          <el-select v-model="alterTeacher.class_list" multiple placeholder="请选择班级" size="large">
+          <el-select v-model="alterTeacher.class_id_list" multiple placeholder="请选择班级" size="large">
             <el-option v-for="item in all_class_list" :label="item.class_name" :value="item.class_id" :key="item.class_id">
             </el-option>
           </el-select>
@@ -80,10 +80,10 @@ export default {
         //将后台传来的class_list进一步解析，方便vue组件绑定数据
         for (var out_i = 0; out_i < this.teachers.length; out_i++) {
           var a_teacher = this.teachers[out_i];
-          a_teacher.class_name_list = "";
+          a_teacher.class_names = "";
           for (var in_i = 0; in_i < a_teacher.class_list.length; in_i++) {
-            a_teacher.class_name_list += a_teacher.class_list[in_i].class_name;
-            a_teacher.class_name_list += "; "
+            a_teacher.class_names += a_teacher.class_list[in_i].class_name;
+            a_teacher.class_names += "; "
           }
         }
 
@@ -120,12 +120,16 @@ export default {
       new_teacher: {
         t_id: "",
         t_name: "",
-        class_list: []
+        class_list: [],
+        class_id_list: [],
+        class_names: ""
       },
       alterTeacher: {
         t_id: "",
         t_name: "",
-        class_list: []
+        class_list: [],
+        class_id_list: [],
+        class_names: ""
       },
       alterRow: {},
       dialogVisible: false,
@@ -164,10 +168,10 @@ export default {
           //将后台传来的class_list进一步解析，方便vue组件绑定数据
           for (var out_i = 0; out_i < this.teachers.length; out_i++) {
             var a_teacher = this.teachers[out_i];
-            a_teacher.class_name_list = "";
+            a_teacher.class_names = "";
             for (var in_i = 0; in_i < a_teacher.class_list.length; in_i++) {
-              a_teacher.class_name_list += a_teacher.class_list[in_i].class_name;
-              a_teacher.class_name_list += "; "
+              a_teacher.class_names += a_teacher.class_list[in_i].class_name;
+              a_teacher.class_names += "; "
             }
           }
 
@@ -185,21 +189,28 @@ export default {
       this.dialogFormVisible = true;
       this.alterTeacher.t_id = row.t_id;
       this.alterTeacher.t_name = row.t_name;
-      this.alterTeacher.class_list = row.class_list;
+      this.alterTeacher.class_id_list = [];
+      for (var i = 0; i < row.class_list.length; i++) {
+        this.alterTeacher.class_id_list.push(row.class_list[i].class_id);
+      }
       this.alterRow = row;
     },
     alterTeacherA: function () {
       if (this.alterTeacher.t_id.length > 0 &&
           this.alterTeacher.t_name.length > 0 &&
-          this.alterTeacher.class_list.length > 0) {
+          this.alterTeacher.class_id_list.length > 0) {
 
-        var new_class_ids = this.alterTeacher.class_list;
-        this.alterTeacher.class_name_list = "";
-        for (var i = 0; i < this.alterTeacher.class_list.length; i++) {
-          this.alterTeacher.class_name_list +=
-            this.all_class_map.get(this.alterTeacher.class_list[i])
+        this.alterTeacher.class_names = "";
+        this.alterTeacher.class_list = [];
+        for (var i = 0; i < this.alterTeacher.class_id_list.length; i++) {
+          var class_name = this.all_class_map.get(
+            this.alterTeacher.class_id_list[i]);
+          this.alterTeacher.class_list[i] = {
+            class_id: this.alterTeacher.class_id_list[i],
+            class_name: class_name};
+          this.alterTeacher.class_names += class_name;
+          this.alterTeacher.class_names += "; ";
         }
-        this.alterTeacher.class_name_list = new_class_names;
 
         this.$http({
           method: 'post',
@@ -208,17 +219,16 @@ export default {
             "old_t_id": this.alterRow.t_id,
             "new_t_id": this.alterTeacher.t_id,
             "new_t_name": this.alterTeacher.t_name,
-            "new_class_list": new_class_ids
+            "new_class_list": this.alterTeacher.class_id_list
           }
         }).then((response) => {
           if (response.data.result == 0) {
             this.alterRow.t_id = this.alterTeacher.t_id;
             this.alterRow.t_name = this.alterTeacher.t_name;
             this.alterRow.class_list = this.alterTeacher.class_list;
-            this.alterRow.class_name_list = this.alterTeacher.class_name_list;
+            this.alterRow.class_names = this.alterTeacher.class_names;
             this.dialogFormVisible = false;
-          }
-          else {
+          } else {
             this.$notify({
               title: '未知错误！',
               type: 'success',
@@ -261,14 +271,18 @@ export default {
     },
     addTeacher: function () {
       if (this.new_teacher.t_name.length > 0 &&
-            this.new_teacher.class_list.length > 0) {
-        var new_class_ids = [];
-        var new_class_names = [];
-        for (var i = 0; i < this.new_teacher.class_list.length; i++) {
-          new_class_ids[i] = this.new_teacher.class_list[i].class_id;
-          new_class_names[i] = this.new_teacher.class_list[i].class_name;
+            this.new_teacher.class_id_list.length > 0) {
+        this.new_teacher.class_names = "";
+        this.new_teacher.class_list = [];
+        for (var i = 0; i < this.new_teacher.class_id_list.length; i++) {
+          var class_name = this.all_class_map.get(
+            this.new_teacher.class_id_list[i]);
+          this.new_teacher.class_list[i] = {
+            class_id: this.new_teacher.class_id_list[i],
+            class_name: class_name};
+          this.new_teacher.class_names += class_name;
+          this.new_teacher.class_names += "; ";
         }
-        this.new_teacher.class_name_list = new_class_names;
 
         this.$http({
           method: 'post',
@@ -276,7 +290,7 @@ export default {
           data: {
             t_id: this.new_teacher.t_id,
             t_name: this.new_teacher.t_name,
-            class_list: new_class_ids
+            class_list: this.new_teacher.class_id_list
           }
         }).then((response) => {
           if (response.data.result == 0) {

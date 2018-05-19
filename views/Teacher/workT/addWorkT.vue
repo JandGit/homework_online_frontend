@@ -6,8 +6,9 @@
                     <el-input type="text" v-model="title" :maxlength=30></el-input>
                 </el-form-item>
                 <el-form-item label="面向班级：">
-                    <el-select v-model="audiences" multiple placeholder="请选择班级">
-                        <el-option v-for="item in className" :key="item.id" :label="item.class_id" :value="item.class_name"></el-option>
+                    <el-select v-model="hw_class_id" multiple placeholder="请选择班级">
+                        <el-option v-for="item in g_all_class_list" :key="item.class_id"
+                                   :label="item.class_name" :value="item.class_id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="开始日期：">
@@ -16,7 +17,7 @@
                         type="date"
                         format="yyyy-MM-dd"
                         @change="changeStart"
-                        placeholder="选择开始日期">                      
+                        placeholder="选择开始日期">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="结束日期：">
@@ -25,7 +26,7 @@
                         type="date"
                         format="yyyy-MM-dd"
                         @change="changeEnd"
-                        placeholder="选择开始日期">                      
+                        placeholder="选择开始日期">
                     </el-date-picker>
                 </el-form-item>
             </el-form>
@@ -44,55 +45,29 @@
 <script>
     export default{
         created: function() {
-            // this.$http({
-            //     method: 'POST',
-            //     url: '/api/teacher/indexT',
-            //     headers: {
-            //         'Authorization': 'Bearer '+ localStorage.token
-            //     }
-            // }).then( (response) => {
-            //     if(response.data.errno == 200) {
-            //         this.id = response.data.data.id
-            //         this.userName = response.data.data.name
-            //         this.className = response.data.data.class
-            //     }
-            //     else {
-            //         this.$notify({
-            //             title: '未知错误！',
-            //             type: 'success',
-            //             offset: 100
-            //         })
-            //     }         
-            // })
             this.$http({
-                method: 'GET',
-                url: '/api/teacher/teach_class',
-                // headers: {
-                //     'Authorization': 'Bearer '+ localStorage.token
-                // }
+                method: 'get',
+                url: '/api/teacher/teach_class'
             }).then( (response) => {
                 if(response.data.result == 0) {
-                    // this.id = response.data.data.id
-                    // this.userName = response.data.data.name
-                    this.className = response.data.data.class
-                }
-                else {
+                    this.g_all_class_list = response.data.data.class_list;
+                } else {
                     this.$notify({
-                        title: '未知错误！',
+                        title: '服务器出现错误！',
                         type: 'success',
                         offset: 100
                     })
-                }         
+                }
             })
         },
         data: function() {
             return {
                 id: '',
                 userName: '',
-                className: [],
+                g_all_class_list: [],
                 dialogVisible: false,
                 title: '',
-                audiences: [],
+                hw_class_id: [],
                 dateStart: '',
                 dateFinish: '',
                 date_start: '',
@@ -101,16 +76,14 @@
         },
         methods: {
             addWorkT: function() {
-                if(this.title.length != 0 && this.audiences.length != 0 && this.dateStart.length != 0 && this.dateFinish.length != 0){
+                if(this.title.length != 0 && this.hw_class_id.length != 0 &&
+                        this.dateStart.length != 0 && this.dateFinish.length != 0){
                     this.$http({
                         method: 'POST',
                         url: '/api/teacher/homeworks/edit',
-                        // headers: {
-                        //         'Authorization': 'Bearer '+ localStorage.token
-                        // },
                         data: {
                             title: this.title,
-                            class_ids: this.audiences,
+                            class_ids: this.hw_class_id,
                             date_start: this.date_start,
                             date_end: this.date_end,
                         }
@@ -125,10 +98,9 @@
                         title: '请填写内容！',
                         type: 'warning',
                         offset: 100
-                    })
+                    });
                     this.dialogVisible = false
                 }
-                
             },
             changeStart(value) {
                 this.date_start = value

@@ -1,38 +1,37 @@
 <template>
     <div class="wrapper">
-            <el-menu class="menu" theme="dark" default-active="/Teacher/noticeT" :router=true>
-                <el-card class="userCard">
-                    <div class="imgWrapper">
-                        <img src="https://img.alicdn.com/imgextra/i2/855439689/TB2RcHTg90mpuFjSZPiXXbssVXa_!!855439689.png" alt=" moon.png"/>
-                    </div>         
-                    <div style="padding: 10px;">
-                        <span>{{userName}}</span>
-                        <br><br>
-                        <span>{{ className }}</span>
-                        <!-- <span v-for="item in className">{{item}} </span> -->
-                        <br><br>
-                        <span>{{currentDate}}</span>
-                    </div>
-                </el-card>
-                <el-menu-item index="/Teacher/noticeT"><i class="el-icon-menu"></i>公告</el-menu-item>
-                <el-submenu index="topic">
-                    <template slot="title"><i class="el-icon-menu"></i>题库</template>
-                    <el-menu-item index="/Teacher/addTopicT">增加题目</el-menu-item>
-                    <el-menu-item index="/Teacher/queryTopicT">查看题库</el-menu-item>                 
-                </el-submenu>
-                <el-submenu index="work">
-                    <template slot="title"><i class="el-icon-menu"></i>作业</template>
-                    <el-menu-item index="/Teacher/addWorkT">增加作业</el-menu-item>
-                    <el-menu-item index="/Teacher/queryWorkT">查看作业</el-menu-item>
-                    <el-menu-item index="/Teacher/checkingWorkT">未批改作业</el-menu-item>
-                    <el-menu-item index="/Teacher/checkedWorkT">已批改作业</el-menu-item>
-                </el-submenu>
-                <el-menu-item index="/Teacher/passwordT"><i class="el-icon-menu"></i>修改密码</el-menu-item>
-                <el-menu-item index="exit" v-on:click="exit()"><i class="el-icon-menu"></i>退出登录</el-menu-item>
-            </el-menu>
-            <div class="content">
-                <router-view></router-view>
-            </div>
+        <el-menu class="menu" theme="dark" default-active="/Teacher/noticeT" :router=true>
+            <el-card class="userCard">
+                <div class="imgWrapper">
+                    <img src="https://img.alicdn.com/imgextra/i2/855439689/TB2RcHTg90mpuFjSZPiXXbssVXa_!!855439689.png" alt=" moon.png"/>
+                </div>
+                <div style="padding: 10px;">
+                    <span style="color: white">{{userName}}</span>
+                    <br><br>
+                    <span style="color: white">{{ className }}</span>
+                    <br><br>
+                    <span style="color: white">{{currentDate}}</span>
+                </div>
+            </el-card>
+            <el-menu-item index="/Teacher/noticeT"><i class="el-icon-menu"></i>公告</el-menu-item>
+            <el-submenu index="topic">
+                <template slot="title"><i class="el-icon-menu"></i>题库</template>
+                <el-menu-item index="/Teacher/addTopicT">增加题目</el-menu-item>
+                <el-menu-item index="/Teacher/queryTopicT">查看题库</el-menu-item>
+            </el-submenu>
+            <el-submenu index="work">
+                <template slot="title"><i class="el-icon-menu"></i>作业</template>
+                <el-menu-item index="/Teacher/addWorkT">增加作业</el-menu-item>
+                <el-menu-item index="/Teacher/queryWorkT">查看作业</el-menu-item>
+                <el-menu-item index="/Teacher/checkingWorkT">未批改作业</el-menu-item>
+                <el-menu-item index="/Teacher/checkedWorkT">已批改作业</el-menu-item>
+            </el-submenu>
+            <el-menu-item index="/Teacher/passwordT"><i class="el-icon-menu"></i>修改密码</el-menu-item>
+            <el-menu-item index="exit" v-on:click="exit()"><i class="el-icon-menu"></i>退出登录</el-menu-item>
+        </el-menu>
+        <div class="content">
+            <router-view></router-view>
+        </div>
     </div>
 </template>
 
@@ -41,23 +40,20 @@
         created: function(){
             this.$http({
                 method: 'get',
-                url: '/api/teacher/teacher_info',
-                // headers: {
-                //     'Authorization': 'Bearer '+ localStorage.token
-                // }
+                url: '/api/teacher/teacher_info'
             }).then( response => {
                 if(response.data.result == 0) {
-                    this.userName = response.data.data.t_name
-                    this.className = response.data.data.dept_name
+                    this.userName = response.data.data.t_name;
+                    this.className = response.data.data.dept_name;
                 }
                 else {
                     this.$notify({
                         title: '未知错误！',
                         type: 'success',
                         offset: 100
-                    })
+                    });
                     this.$router.replace('/')
-                }         
+                }
             })
         },
         data: function() {
@@ -120,9 +116,9 @@
         height: 150px;
         margin: 20px auto 0;
     }
-    .content{    
+    .content{
         width: 80%;
         height: 100%;
-        margin-left: 300px;   
+        margin-left: 300px;
     }
 </style>

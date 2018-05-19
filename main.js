@@ -42,6 +42,7 @@ Vue.config.productionTip = false;
 
 
 const router = new VueRouter({
+  mode: 'history',
   routes: [
     { path: '/', component: login },
     { path: '/Student', component: indexS,

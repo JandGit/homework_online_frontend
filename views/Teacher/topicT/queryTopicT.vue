@@ -30,26 +30,26 @@
             <el-table-column type="expand">
                 <template scope="props">
                         <el-form>
-                            <el-form-item v-if="props.row.type=='单选题'" label="答案：">
+                            <el-form-item v-if="props.row.type=='single_choice'" label="答案：">
                                 <el-radio v-model="props.row.answerValueT" label="A" :disabled=true>{{props.row.answer.A}}</el-radio>
                                 <el-radio v-model="props.row.answerValueT" label="B" :disabled=true>{{props.row.answer.B}}</el-radio>
                                 <el-radio v-model="props.row.answerValueT" label="C" :disabled=true>{{props.row.answer.C}}</el-radio>
-                                <el-radio v-model="props.row.answerValueT" label="D" :disabled=true>{{props.row.answer.D}}</el-radio> 
+                                <el-radio v-model="props.row.answerValueT" label="D" :disabled=true>{{props.row.answer.D}}</el-radio>
                             </el-form-item>
-                            <el-form-item v-if="props.row.type=='多选题'" label="答案：">
+                            <el-form-item v-if="props.row.type=='multi_choice'" label="答案：">
                                 <el-checkbox v-model="props.row.answerValueT" label="A" :disabled=true>{{props.row.answer.A}}</el-checkbox>
                                 <el-checkbox v-model="props.row.answerValueT" label="B" :disabled=true>{{props.row.answer.B}}</el-checkbox>
                                 <el-checkbox v-model="props.row.answerValueT" label="C" :disabled=true>{{props.row.answer.C}}</el-checkbox>
-                                <el-checkbox v-model="props.row.answerValueT" label="D" :disabled=true>{{props.row.answer.D}}</el-checkbox> 
+                                <el-checkbox v-model="props.row.answerValueT" label="D" :disabled=true>{{props.row.answer.D}}</el-checkbox>
                             </el-form-item>
-                            <el-form-item v-if="props.row.type=='判断题'" label="答案：">
+                            <el-form-item v-if="props.row.type=='judge'" label="答案：">
                                 <el-radio v-model="props.row.answerValueT" label="A" :disabled=true>{{props.row.answer.A}}</el-radio>
                                 <el-radio v-model="props.row.answerValueT" label="B" :disabled=true>{{props.row.answer.B}}</el-radio>
                             </el-form-item>
-                            <el-form-item v-if="props.row.type =='问答题'" label="答案：">
+                            <el-form-item v-if="props.row.type =='free_resp'" label="答案：">
                                 <span>{{props.row.answerValueT}}</span>
                             </el-form-item>
-                            <el-form-item v-if="props.row.type =='作图题'" label="答案：">
+                            <el-form-item v-if="props.row.type =='file'" label="答案：">
                                 <img v-for="item in props.row.answerValueT" :src="item">
                             </el-form-item>
                             <el-form-item label="解释：">
@@ -57,12 +57,12 @@
                             </el-form-item>
                         </el-form>
                 </template>
-            </el-table-column> 
+            </el-table-column>
         </el-table>
         <div class="block">
             <el-pagination
                 :total="total"
-                :page-size="pageSize"      
+                :page-size="pageSize"
                 layout="total, prev, pager, next"
                 v-on:current-change="handleCurrentChange">
             </el-pagination>
@@ -75,13 +75,10 @@
         created: function() {
             this.$http({
                 method: 'get',
-                url: '/api/teacher/questions',
-                // headers: {
-                //         'Authorization': 'Bearer '+ localStorage.token
-                // }
+                url: '/api/teacher/questions'
             }).then( (response) => {
                 if(response.data.result == 0) {
-                    this.topics = response.data.data.questions
+                    this.topics = response.data.data.questions;
                     this.topicsPage = this.topics.slice(0,this.pageSize)
                 }
             })
@@ -103,7 +100,7 @@
             //             type: 'success',
             //             offset: 100
             //         })
-            //     }         
+            //     }
             // })
 
             this.$http({
@@ -114,7 +111,7 @@
                 // }
             }).then( (response) => {
                 if(response.data.result == 0) {
-                    this.workListT = response.data.data.homeworks              
+                    this.workListT = response.data.data.homeworks
                 }
                 else {
                     this.$notify({
@@ -122,7 +119,7 @@
                         type: 'success',
                         offset: 100
                     })
-                }         
+                }
             })
         },
         data: function() {
@@ -147,7 +144,7 @@
             //     for(var i=0; i<this.workListT.length; i++) {
             //         if(this.workListT[i].status == "未发布") {
             //             workDoingListT.push(this.workListT[i])
-            //         }                 
+            //         }
             //     }
             //     return workDoingListT
             // }
@@ -173,7 +170,7 @@
                     }
                 }).then((response) => {
                     if(response.data.errno == 200) {
-                        this.topics = response.data.data
+                        this.topics = response.data.data;
                         this.topicsPage = this.topics.slice(0,this.pageSize)
                     }
                 })
@@ -181,19 +178,17 @@
             topicToWorkT: function(row) {
                 if(this.workId.length>0) {
                     for(var i =0; i < this.workId.length; i++) {
+                        console.log("add ques_id:" + row.ques_id + " to hw:" + this.workId[i]);
                         this.$http({
                             method: 'POST',
                             url: '/api/teacher/homeworks/add_question',
-                            // headers: {
-                            //      'Authorization': 'Bearer'+ localStorage.token
-                            // },
                             data: {
                                 "ques_id": row.ques_id,
                                 "hw_id": this.workId[i]
                             }
                         }).then( (response) => {
                             if(response.data.result == 0){
-                                this.dialogVisible = false
+                                this.dialogVisible = false;
                                 this.$notify({
                                     title: '加入成功！',
                                     type: 'success',
@@ -211,7 +206,7 @@
                         })
 
                     }
-                } 
+                }
                 else {
                     this.dialogVisible = false
                     this.$notify({
@@ -219,49 +214,37 @@
                         type: 'info',
                         offset: 100
                     })
-                }            
+                }
             },
-            deleteTopicT: function(index,row) {
-                if(row.authorId == this.id) {
-                    this.$confirm('此操作将永久删除该题目，是否继续？','提示',{
-                        type: 'warning'
-                    }).then(() => {
-                        this.$http({
-                            method: 'POST',
-                            url: '/api/teacher/deleteTopicT',
-                            headers: {
-                                'Authorization': 'Bearer '+ localStorage.token
-                            },
-                            body: {
-                                "id": row.id
-                            }
-                        }).then( (response) => {
-                            if(response.data.errno == 200){
-                                this.topics.splice(index,1)
-                                this.topicsPage.splice(index,1)
-                            }
-                            else {
-                                this.$notify({
-                                    title: '未知错误！',
-                                    type: 'info',
-                                    offset: 100
-                                })
-                            }
-                        })
-                    }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '取消删除！'
-                        })
+            deleteTopicT: function(index, row) {
+                this.$confirm('此操作将永久删除该题目，是否继续？','提示',{
+                    type: 'warning'
+                }).then(() => {
+                    this.$http({
+                        method: 'POST',
+                        url: '/api/teacher/del_question',
+                        data: {
+                            "ques_id": row.ques_id
+                        }
+                    }).then( (response) => {
+                        if(response.data.result == 0){
+                            this.topics.splice(index,1);
+                            this.topicsPage.splice(index,1);
+                        }
+                        else {
+                            this.$notify({
+                                title: '未知错误！',
+                                type: 'info',
+                                offset: 100
+                            })
+                        }
                     })
-                }
-                else {
-                    this.$notify({
-                        title: '您没有权限删除此题！',
+                }).catch(() => {
+                    this.$message({
                         type: 'info',
-                        offset: 100
+                        message: '取消删除！'
                     })
-                }
+                });
             },
             handleCurrentChange: function(now) {
                 this.topicsPage = this.topics.slice((now-1)*this.pageSize,now*this.pageSize)
@@ -280,12 +263,12 @@
                         now[i].ques_type = '问答题'
                     } if(now[i].ques_type == 'file') {
                         now[i].ques_type = '作图题'
-                    } 
+                    }
                 }
             }
-        }             
+        }
     }
-    
+
 </script>
 
 <style scoped>

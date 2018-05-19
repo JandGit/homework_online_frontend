@@ -56,7 +56,7 @@
               var userType = response.data.data.user_type;
               switch (userType) {
                 case "admin":
-                  this.$router.replace("/Admin");
+                  this.$router.replace("/Admin/teacher_mgr");
                   break;
                 case "teacher":
                   this.$router.replace("/Teacher/noticeT");

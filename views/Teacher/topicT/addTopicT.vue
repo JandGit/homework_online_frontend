@@ -36,11 +36,11 @@
                             accept="image/*"
                             list-type="picture-card"
                             :action="this.action"
-                            :on-preview="preview"  
-                            :on-success="success" 
+                            :on-preview="preview"
+                            :on-success="success"
                             :file-list="fileList">
                             <i class="el-icon-plus"></i>
-                        </el-upload>                       
+                        </el-upload>
                         <el-dialog v-model="show" size="small">
                             <img width="100%" :src="value">
                         </el-dialog>
@@ -102,14 +102,14 @@
                 action: "//jsonplaceholder.typicode.com/posts/",
                 show: false,
                 dialogVisible: false,
-                checkList: []      
+                checkList: []
             }
         },
         methods: {
             success: function(response,file,fileList) {
                 this.fileList = fileList
             },
-            preview: function(file) {            
+            preview: function(file) {
                 this.value = file.url
                 this.show = true;
             },
@@ -122,8 +122,8 @@
                     for(var i = 0; i < ansKeys.length; i++ ) {
                         ques_answer.push(this.answer[ansKeys[i]])
                     }
-                    answer.choices = ques_answer
-                    answer.answer = this.answerValueT
+                    answer.choices = ques_answer;
+                    answer.answer = this.answerValueT;
                     if(this.type == '单选题') {
                         ques_type = 'single_choice'
                     } else if(this.type == '多选题') {
@@ -136,13 +136,13 @@
                         ques_type = 'file'
                     }
                     var data = {
-                            ques_content: this.question,
-                            // label: this.label,
-                            ques_type: ques_type,
-                            answer: answer,
-                            // answerValueT: this.answerValueT,
-                            // answerExplain: this.answerExplain
-                        }
+                        ques_content: this.question,
+                        // label: this.label,
+                        ques_type: ques_type,
+                        answer: answer,
+                        // answerValueT: this.answerValueT,
+                        // answerExplain: this.answerExplain
+                    }
                     this.$http({
                         method: 'POST',
                         url: '/api/teacher/questions',
