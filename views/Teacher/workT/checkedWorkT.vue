@@ -27,7 +27,7 @@
         created: function() {
             this.$http({
                 method: 'POST',
-                url: 'api/teacher/stu_homeworks',
+                url: '/api/teacher/stu_homeworks',
                 data: {
                     'homework_type': 'checked',
                     'class_id': -1

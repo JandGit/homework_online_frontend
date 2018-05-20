@@ -21,7 +21,7 @@
                        :type="topic.ques_type"
                        :status="topic.status"
                        :answer="topic.answer.choices"
-                       :answerValueS="topic.stu_answer.choices"
+                       :answerValueS="topic.stu_answer"
                 >
                 </topic>
                 <br><br>

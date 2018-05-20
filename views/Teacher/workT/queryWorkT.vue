@@ -48,10 +48,10 @@
             workListT: function(now) {
                 for(var i=0; i<now.length; i++) {
                     if(now[i].status == 'published') {
-                        now[i].status = '未发布'
+                        now[i].status = '已发布'
                     }
                     if(now[i].status == 'unpublished') {
-                        now[i].status = '已发布'
+                        now[i].status = '未发布'
                     }
                     now[i].class_names = now[i].class_names.join(',') 
                 }
@@ -68,7 +68,7 @@
                         type: 'warning',
                         offset: 100
                     })
-                    this.$router.push({ name: 'workT', params: { hw_id: row.hw_id, mark: 1 } })
+                    // this.$router.push({ name: 'workT', params: { hw_id: row.hw_id, mark: 1 } })
                 }
             },
             deleteWorkT: function(index,row) {
