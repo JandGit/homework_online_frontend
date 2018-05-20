@@ -5,13 +5,13 @@
         <br><br>
         <!-- 单选题 -->
         <div class="answerWrapper" v-if="type === 'single_choice'">
-            <!-- <el-radio v-model="value" label="A" :disabled="this.disabled">{{answer.A}}</el-radio>
-            <el-radio v-model="value" label="B" :disabled="this.disabled">{{answer.B}}</el-radio>
-            <el-radio v-model="value" label="C" :disabled="this.disabled">{{answer.C}}</el-radio>
-            <el-radio v-model="value" label="D" :disabled="this.disabled">{{answer.D}}</el-radio>            -->
-            <el-radio v-for="ans in answer" :label="ans" :disabled="this.disabled" :key="ans" v-model="value">
-                {{ ans }}
-            </el-radio>
+            <el-radio v-model="value[0]" label="A" :disabled="this.disabled">{{answer[0]}}</el-radio>
+            <el-radio v-model="value[0]" label="B" :disabled="this.disabled">{{answer[1]}}</el-radio>
+            <el-radio v-model="value[0]" label="C" :disabled="this.disabled">{{answer[2]}}</el-radio>
+            <el-radio v-model="value[0]" label="D" :disabled="this.disabled">{{answer[3]}}</el-radio>
+            <!--<el-radio v-for="ans in answer" :label="ans" :disabled="this.disabled" :key="ans" v-model="value">-->
+                <!--{{ ans }}-->
+            <!--</el-radio>-->
             <div class="explain" v-if="status === 'checked'">
                 <br><br>
                 <span>正确答案：{{answerValueT}}</span>
@@ -27,14 +27,14 @@
         </div>
 
         <div class="answerWrapper" v-if="type === 'multi_choice'">
-            <el-checkbox-group v-model="list">
-                <!-- <el-checkbox label="A" :disabled="this.disabled">{{answer.A}}</el-checkbox>
-                <el-checkbox label="B" :disabled="this.disabled">{{answer.B}}</el-checkbox>
-                <el-checkbox label="C" :disabled="this.disabled">{{answer.C}}</el-checkbox>
-                <el-checkbox label="D" :disabled="this.disabled">{{answer.D}}</el-checkbox> -->
-                <el-checkbox v-for="ans in answer" :label="ans"  :key="ans" :disabled="this.disabled">
-                    {{ ans }}
-                    </el-checkbox> 
+            <el-checkbox-group v-model="value">
+                <el-checkbox label="A" :disabled="this.disabled">{{answer[0]}}</el-checkbox>
+                <el-checkbox label="B" :disabled="this.disabled">{{answer[1]}}</el-checkbox>
+                <el-checkbox label="C" :disabled="this.disabled">{{answer[2]}}</el-checkbox>
+                <el-checkbox label="D" :disabled="this.disabled">{{answer[3]}}</el-checkbox>
+                <!--<el-checkbox v-for="ans in answer" :label="ans"  :key="ans" :disabled="this.disabled">-->
+                    <!--{{ ans }}-->
+                <!--</el-checkbox> -->
             </el-checkbox-group>
             <div class="explain" v-if="status === 'checked'">
                 <br><br>
@@ -51,8 +51,8 @@
         </div>
 
         <div class="answerWrapper" v-if="type === 'judge'">
-            <el-radio v-model="value" label="A" :disabled="this.disabled">{{answer.A}}</el-radio>
-            <el-radio v-model="value" label="B" :disabled="this.disabled">{{answer.B}}</el-radio>      
+            <el-radio v-model="value[0]" label="A" :disabled="this.disabled">对 </el-radio>
+            <el-radio v-model="value[0]" label="B" :disabled="this.disabled">错 </el-radio>
             <div class="explain" v-if="status === 'checked'">
                 <br><br>
                 <span>正确答案：{{answerValueT}}</span>
@@ -138,19 +138,20 @@
                 this.disabled = true
                 this.action = ''
             }
-            if(typeof(this.answerValueS)=="string") {
-                this.value = this.answerValueS
-            }
-            else if(this.type == "multi_choice") {
-                this.list = this.answerValueS
-            } 
-            else if(this.type == "file") {
-                this.fileList = this.answerValueS
-            }   
+            this.value = this.answerValueS;
+            // if(typeof(this.answerValueS)=="string") {
+            //     this.value = this.answerValueS
+            // }
+            // else if(this.type == "multi_choice") {
+            //     this.list = this.answerValueS
+            // }
+            // else if(this.type == "file") {
+            //     this.fileList = this.answerValueS
+            // }
         },
         data: function() {
             return {
-                value: "",
+                value: [],
                 list: [],
                 fileList: [],
                 show: false,

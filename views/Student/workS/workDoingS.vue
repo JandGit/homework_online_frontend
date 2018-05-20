@@ -7,7 +7,7 @@
             <el-table-column label="发布人" prop="author"></el-table-column>
             <el-table-column label="操作">
                 <template scope="scope">
-                    <el-button size="small" type="success" v-on:click="start(scope.$index, scope.row)">提交作业</el-button>
+                    <el-button size="small" type="success" v-on:click="start(scope.$index, scope.row)">编辑作业</el-button>
                 </template>           
             </el-table-column>
         </el-table>

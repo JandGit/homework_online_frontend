@@ -38,7 +38,7 @@
                 // }
             }).then( (response) => {
                 if(response.data.result === 0) {
-                    this.checkingWorkListT = response.data.data.homeworks
+                    this.checkingWorkListT = response.data.data.homeworks;
                     this.checkingWorkListPageT = this.checkingWorkListT.slice(0,this.pageSize)
                 } else {
                     this.$notify({

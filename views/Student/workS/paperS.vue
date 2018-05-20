@@ -64,11 +64,7 @@ export default {
     this.$http({
       method: "POST",
       url: '/api/student/homework_detail',
-      // headers: {
-      //     'Authorization': 'Bearer '+ localStorage.token
-      // },
       data: {
-          // "homework_type": homeworkType
         'hw_id': hwId
       }
     }).then(response => {

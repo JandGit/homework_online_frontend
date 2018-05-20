@@ -13,7 +13,7 @@
         </el-table>
     </div>
 </template>
-z
+
 <script>
 export default {
   created: function() {

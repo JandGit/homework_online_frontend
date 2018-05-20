@@ -1,6 +1,7 @@
 <template>
     <div class="wrapper">
-        <el-input class="searchInput" placeholder="请输入要搜索的题目关键字" v-model="searchValue" icon="search" :focus="watchEnter()" v-on:click="search()"></el-input>
+        <el-input class="searchInput" placeholder="请输入要搜索的题目关键字" v-model="searchValue"
+                  icon="search" :focus="watchEnter()" v-on:click="search()"></el-input>
         <el-table class="table" :data="topicsPage" border>
             <el-table-column label="类型" prop="ques_type"></el-table-column>
             <!-- <el-table-column label="标签" prop="label"></el-table-column> -->
@@ -9,7 +10,7 @@
             <el-table-column label="操作">
                 <template scope="scope">
                     <el-button size="small" type="danger"  v-on:click="deleteTopicT(scope.$index, scope.row)">删除</el-button>
-                    <el-button size="small" type="success" v-on:click="dialogVisible = true">加入作业</el-button>
+                    <el-button size="small" type="success" v-on:click="dialogVisible = true, g_selected_row=scope.row">加入作业</el-button>
                     <el-dialog title="提示" v-model="dialogVisible">
                         <el-form>
                             <el-form-item>
@@ -22,38 +23,35 @@
                         </el-form>
                         <div class="dialog-footer">
                             <el-button v-on:click="dialogVisible=false">取消</el-button>
-                            <el-button type="success" v-on:click="topicToWorkT(scope.row)">确定</el-button>
+                            <el-button type="success" v-on:click="topicToWorkT(g_selected_row)">确定</el-button>
                         </div>
                     </el-dialog>
                 </template>
             </el-table-column>
             <el-table-column type="expand">
-                <template scope="props">
+                <template scope="scope">
                         <el-form>
-                            <el-form-item v-if="props.row.type=='single_choice'" label="答案：">
-                                <el-radio v-model="props.row.answerValueT" label="A" :disabled=true>{{props.row.answer.A}}</el-radio>
-                                <el-radio v-model="props.row.answerValueT" label="B" :disabled=true>{{props.row.answer.B}}</el-radio>
-                                <el-radio v-model="props.row.answerValueT" label="C" :disabled=true>{{props.row.answer.C}}</el-radio>
-                                <el-radio v-model="props.row.answerValueT" label="D" :disabled=true>{{props.row.answer.D}}</el-radio>
+                            <el-form-item v-if="scope.row.ques_type == '单选题'" label="">
+                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="A" :disabled=true>{{scope.row.answer.choices[0]}}</el-radio>
+                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="B" :disabled=true>{{scope.row.answer.choices[1]}}</el-radio>
+                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="C" :disabled=true>{{scope.row.answer.choices[2]}}</el-radio>
+                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="D" :disabled=true>{{scope.row.answer.choices[3]}}</el-radio>
                             </el-form-item>
-                            <el-form-item v-if="props.row.type=='multi_choice'" label="答案：">
-                                <el-checkbox v-model="props.row.answerValueT" label="A" :disabled=true>{{props.row.answer.A}}</el-checkbox>
-                                <el-checkbox v-model="props.row.answerValueT" label="B" :disabled=true>{{props.row.answer.B}}</el-checkbox>
-                                <el-checkbox v-model="props.row.answerValueT" label="C" :disabled=true>{{props.row.answer.C}}</el-checkbox>
-                                <el-checkbox v-model="props.row.answerValueT" label="D" :disabled=true>{{props.row.answer.D}}</el-checkbox>
+                            <el-form-item v-if="scope.row.ques_type == '多选题'" label="">
+                                <el-checkbox class="select" v-model="scope.row.answer.answer" label="A" :disabled=true>{{scope.row.answer.choices[0]}}</el-checkbox>
+                                <el-checkbox class="select" v-model="scope.row.answer.answer" label="B" :disabled=true>{{scope.row.answer.choices[1]}}</el-checkbox>
+                                <el-checkbox class="select" v-model="scope.row.answer.answer" label="C" :disabled=true>{{scope.row.answer.choices[2]}}</el-checkbox>
+                                <el-checkbox class="select" v-model="scope.row.answer.answer" label="D" :disabled=true>{{scope.row.answer.choices[3]}}</el-checkbox>
                             </el-form-item>
-                            <el-form-item v-if="props.row.type=='judge'" label="答案：">
-                                <el-radio v-model="props.row.answerValueT" label="A" :disabled=true>{{props.row.answer.A}}</el-radio>
-                                <el-radio v-model="props.row.answerValueT" label="B" :disabled=true>{{props.row.answer.B}}</el-radio>
+                            <el-form-item v-if="scope.row.ques_type == '判断题'" label="">
+                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="A" :disabled=true></el-radio>
+                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="B" :disabled=true></el-radio>
                             </el-form-item>
-                            <el-form-item v-if="props.row.type =='free_resp'" label="答案：">
-                                <span>{{props.row.answerValueT}}</span>
+                            <el-form-item v-if="scope.row.ques_type == '问答题'" label="">
+                                <span>{{scope.row.ques_content}}</span>
                             </el-form-item>
-                            <el-form-item v-if="props.row.type =='file'" label="答案：">
-                                <img v-for="item in props.row.answerValueT" :src="item">
-                            </el-form-item>
-                            <el-form-item label="解释：">
-                                <span>{{ props.row.answerExplain }}</span>
+                            <el-form-item v-if="scope.row.ques_type == '作图题'" label="">
+                                <!--<img v-for="item in scope.row.answerValueT" :src="item">-->
                             </el-form-item>
                         </el-form>
                 </template>
@@ -105,10 +103,7 @@
 
             this.$http({
                 method: 'POST',
-                url: '/api/teacher/homeworks',
-                // headers: {
-                //     'Authorization': 'Bearer '+ localStorage.token
-                // }
+                url: '/api/teacher/homeworks'
             }).then( (response) => {
                 if(response.data.result == 0) {
                     this.workListT = response.data.data.homeworks
@@ -178,7 +173,7 @@
             topicToWorkT: function(row) {
                 if(this.workId.length>0) {
                     for(var i =0; i < this.workId.length; i++) {
-                        console.log("add ques_id:" + row.ques_id + " to hw:" + this.workId[i]);
+                        console.log("add ques_id:" + row.ques_id + " content:" + row.ques_content);
                         this.$http({
                             method: 'POST',
                             url: '/api/teacher/homeworks/add_question',
@@ -296,5 +291,8 @@
     }
     .dialog-footer{
         text-align: right;
+    }
+    .select.el-radio__input.is-disabled+.el-radio__label{
+        color: black !important;
     }
 </style>

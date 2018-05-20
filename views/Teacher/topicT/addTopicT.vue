@@ -3,42 +3,62 @@
         <div class="topicWrapper">
             <el-form class="topic" label-width="80px">
                 <el-form-item label="问题：">
-                    <el-input type="textarea" v-model="question" :maxlength=100></el-input>
+                    <el-input type="textarea" v-model="ques_content" :maxlength=100></el-input>
                 </el-form-item>
                 <!-- <el-form-item label="标签：">
                     <el-input class="input" v-model="label" :maxlength=20 placeholder="以后可按标签查找题目"></el-input>
                 </el-form-item> -->
                 <el-form-item label="类型：">
-                    <el-select v-model="type" placeholder="请选择">
-                        <el-option v-for="item in typeList" :key="item.id" :label="item.label" :value="item.value" @change="changeType"></el-option>
+                    <el-select v-model="ques_type" placeholder="请选择">
+                        <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value"
+                                   @change="changeType"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="答案：">
-                    <div  v-if="type == '单选题'">
-                        <el-radio v-model="answerValueT" label="A">A：&nbsp;<el-input v-model="answer.A" :maxlength=50></el-input></el-radio><br>
-                        <el-radio v-model="answerValueT" label="B">B：&nbsp;<el-input v-model="answer.B" :maxlength=50></el-input></el-radio><br>
-                        <el-radio v-model="answerValueT" label="C">C：&nbsp;<el-input v-model="answer.C" :maxlength=50></el-input></el-radio><br>
-                        <el-radio v-model="answerValueT" label="D">D：&nbsp;<el-input v-model="answer.D" :maxlength=50></el-input></el-radio><br>
+                    <div v-if="ques_type == 'single_choice'">
+                        <el-radio v-model="answer.answer[0]" label="A">A：
+                            <el-input v-model="answer.choices[0]" :maxlength=50></el-input>
+                        </el-radio>
+                        <br><br>
+                        <el-radio v-model="answer.answer[0]" label="B">B：
+                            <el-input v-model="answer.choices[1]" :maxlength=50></el-input>
+                        </el-radio>
+                        <br><br>
+                        <el-radio v-model="answer.answer[0]" label="C">C：
+                            <el-input v-model="answer.choices[2]" :maxlength=50></el-input>
+                        </el-radio>
+                        <br><br>
+                        <el-radio v-model="answer.answer[0]" label="D">D：
+                            <el-input v-model="answer.choices[3]" :maxlength=50></el-input>
+                        </el-radio>
+                        <br><br>
                     </div>
-                    <el-checkbox-group v-model="checkList" v-if="type == '多选题'">
-                        <el-checkbox label="A"></el-checkbox> <el-input class="input" v-model="answer.A" :maxlength=50></el-input><br>
-                        <el-checkbox label="B"></el-checkbox> <el-input class="input" v-model="answer.B" :maxlength=50></el-input><br>
-                        <el-checkbox label="C"></el-checkbox> <el-input class="input" v-model="answer.C" :maxlength=50></el-input><br>
-                        <el-checkbox label="D"></el-checkbox> <el-input class="input" v-model="answer.D" :maxlength=50></el-input><br>
+                    <el-checkbox-group v-model="answer.answer" v-if="ques_type == 'multi_choice'">
+                        <el-checkbox label="A">A:</el-checkbox>
+                        <el-input class="input" v-model="answer.choices[0]" :maxlength=50></el-input>
+                        <br><br>
+                        <el-checkbox label="B">B:</el-checkbox>
+                        <el-input class="input" v-model="answer.choices[1]" :maxlength=50></el-input>
+                        <br><br>
+                        <el-checkbox label="C">C:</el-checkbox>
+                        <el-input class="input" v-model="answer.choices[2]" :maxlength=50></el-input>
+                        <br><br>
+                        <el-checkbox label="D">D:</el-checkbox>
+                        <el-input class="input" v-model="answer.choices[3]" :maxlength=50></el-input>
+                        <br><br>
                     </el-checkbox-group>
-                    <div  v-if="type == '判断题'">
-                        <el-radio v-model="answerValueT" label="A">对 &nbsp;<el-input v-model="answer.A" :maxlength=50></el-input></el-radio><br>
-                        <el-radio v-model="answerValueT" label="B">错 &nbsp;<el-input v-model="answer.B" :maxlength=50></el-input></el-radio><br>
+                    <div v-if="ques_type == 'judge'">
+                        <el-radio v-model="answer.answer[0]" label="A">对 </el-radio>
+                        <el-radio v-model="answer.answer[0]" label="B">错 </el-radio>
                     </div>
-                    <el-input v-if="type == '问答题'" type="textarea" :maxlength=300 v-model="answerValueT"></el-input>
-                    <div v-if="type=='作图题'">
+                    <div v-if="ques_type == 'file'">
                         <el-upload
-                            accept="image/*"
-                            list-type="picture-card"
-                            :action="this.action"
-                            :on-preview="preview"
-                            :on-success="success"
-                            :file-list="fileList">
+                                accept="image/*"
+                                list-ques_type="picture-card"
+                                :action="this.action"
+                                :on-preview="preview"
+                                :on-success="success"
+                                :file-list="fileList">
                             <i class="el-icon-plus"></i>
                         </el-upload>
                         <el-dialog v-model="show" size="small">
@@ -46,9 +66,6 @@
                         </el-dialog>
                     </div>
                 </el-form-item>
-                <!-- <el-form-item label="解释：">
-                    <el-input  type="textarea" v-model="answerExplain"></el-input>
-                </el-form-item> -->
             </el-form>
         </div>
         <el-button class="button" type="success" size="large" v-on:click="dialogVisible = true">提交</el-button>
@@ -63,39 +80,29 @@
 </template>
 
 <script>
-    export default{
-        data: function() {
+    export default {
+        data: function () {
             return {
-                question: '',
-                type: '',
+                ques_content: '',
+                ques_type: '',
                 label: '',
-                answer: {
-                    A: '',
-                    B: '',
-                    C: '',
-                    D: ''
-                },
+                answer: {choices: [], answer: []},
                 answerValueT: '',
                 answerExplain: '',
                 typeList: [{
-                    value: '单选题',
-                    // value: 'single_choice',
+                    value: 'single_choice',
                     label: '单选题'
-                },{
-                    value: '多选题',
-                    // value: 'multi_choice',
+                }, {
+                    value: 'multi_choice',
                     label: '多选题'
-                },{
-                    value: '判断题',
-                    // value: 'judge',
+                }, {
+                    value: 'judge',
                     label: '判断题'
-                },{
-                    value: '问答题',
-                    // value: 'free_resp',
+                }, {
+                    value: 'free_resp',
                     label: '问答题'
-                },{
-                    value: '作图题',
-                    // value: 'file',
+                }, {
+                    value: 'file',
                     label: '作图题'
                 }],
                 fileList: [],
@@ -106,74 +113,130 @@
             }
         },
         methods: {
-            success: function(response,file,fileList) {
+            success: function (response, file, fileList) {
                 this.fileList = fileList
             },
-            preview: function(file) {
+            preview: function (file) {
                 this.value = file.url
                 this.show = true;
             },
-            addTopicT: function() {
-                if(this.question.length != 0 && this.type.length != 0 && ((this.type != 'multi_choices' &&  this.answerValueT != '') || (this.type == 'multi_choices' &&  this.checkList.length != 0))){
-                    var ansKeys = Object.keys(this.answer)
-                    var ques_type
-                    var ques_answer = []
-                    var answer = {}
-                    for(var i = 0; i < ansKeys.length; i++ ) {
-                        ques_answer.push(this.answer[ansKeys[i]])
-                    }
-                    answer.choices = ques_answer;
-                    answer.answer = this.answerValueT;
-                    if(this.type == '单选题') {
-                        ques_type = 'single_choice'
-                    } else if(this.type == '多选题') {
-                        ques_type = 'multi_choice'
-                    } else if(this.type == '判断题') {
-                        ques_type = 'judge'
-                    } else if(this.type == '问答题') {
-                        ques_type = 'free_resp'
-                    } else if(this.type == '作图题') {
-                        ques_type = 'file'
-                    }
-                    var data = {
-                        ques_content: this.question,
-                        // label: this.label,
-                        ques_type: ques_type,
-                        answer: answer,
-                        // answerValueT: this.answerValueT,
-                        // answerExplain: this.answerExplain
-                    }
-                    this.$http({
-                        method: 'POST',
-                        url: '/api/teacher/questions',
-                        // headers: {
-                        //         'Authorization': 'Bearer '+ localStorage.token
-                        // },
-                        data: data
-                    }).then( (response) => {
-                        if(response.data.result == 0) {
-                            this.dialogVisible = false
-                        }
-                    })
+            gen_choice_answer: function (answer_list) {
+                if (answer_list.length <= 0) {
+                    return {};
                 }
-                else {
-                    this.$notify({
-                        title: '请填写内容！',
-                        type: 'warning',
-                        offset: 100
-                    })
-                    this.dialogVisible = false
+                var answer = {choices: Object.values(this.answer), answer: []};
+
+                if (answer_list.length > 1) {   //multi_choice
+                    for (var i = 0; i < answer_list.length; i++) {
+                        answer.push(this.answer[answer_list[i]])
+                    }
                 }
             },
-            changeType(vale) {
-                console.log(value)
+            check_form: function() {
+                if (this.ques_content.length <= 0) {
+                    this.$notify({
+                        title: '请填写题目内容！',
+                        type: 'success',
+                        offset: 100
+                    });
+                    return false;
+                }
+                if (this.ques_type == "single_choice" || this.ques_type == "multi_choice") {
+                    var expected_choices_len = 4;
+                    if (this.answer.choices.length < expected_choices_len) {
+                        this.$notify({
+                            title: '请填写完整选择题选项！',
+                            type: 'success',
+                            offset: 100
+                        });
+                        return false;
+                    }
+                    if (0 == this.answer.answer.length) {
+                        this.$notify({
+                            title: '请提供选择题答案！',
+                            type: 'success',
+                            offset: 100
+                        });
+                        return false;
+                    }
+                    if (this.ques_type == "single_choice") {
+                        //由于所有题目类型共享一个全局变量，所以要对这个全局变量做处理
+                        this.answer.answer.splice(1, this.answer.answer.length - 1)
+                    }
+                }
+                if (this.ques_type == "judge") {
+                    if (0 == this.answer.answer.length) {
+                        this.$notify({
+                            title: '请提供判断题答案！',
+                            type: 'success',
+                            offset: 100
+                        });
+                        return false;
+                    }
+
+                    //由于所有题目类型共享一个全局变量，所以要对这个全局变量做处理
+                    this.answer.answer.splice(1, this.answer.answer.length - 1);
+                    this.answer.choices.splice(0, this.answer.choices.length);
+                }
+                return true;
+            },
+            addTopicT: function () {
+                if (!this.check_form()) {
+                    return;
+                }
+
+                // if (this.ques_type == 'single_choice' || this.ques_type == 'multi_choice' ||
+                //         this.ques_type == 'judge') {
+                //     for (var i = 0; i < this.answer.answer.length; i++) {
+                //         if ("A" == this.answer.answer[i]) {
+                //             this.answer.answer[i] = this.answer.choices[0];
+                //         } else if ("B" == this.answer.answer[i]) {
+                //             this.answer.answer[i] = this.answer.choices[1];
+                //         } else if ("C" == this.answer.answer[i]) {
+                //             this.answer.answer[i] = this.answer.choices[2];
+                //         } else if ("D" == this.answer.answer[i]) {
+                //             this.answer.answer[i] = this.answer.choices[3];
+                //         } else {
+                //             this.answer.answer[i] = this.answer.choices[0];
+                //         }
+                //     }
+                // }
+
+                this.$http({
+                    method: 'POST',
+                    url: '/api/teacher/questions',
+                    data: {
+                        ques_content: this.ques_content,
+                        ques_type: this.ques_type,
+                        answer: this.answer
+                    }
+                }).then((response) => {
+                    if (response.data.result == 0) {
+                        this.dialogVisible = false;
+                        this.answer = {choices: [], answer: []};
+                        this.$notify({
+                            title: '创建成功',
+                            type: 'success',
+                            offset: 100
+                        });
+                    } else {
+                        this.$notify({
+                            title: '创建失败，请重试',
+                            type: 'success',
+                            offset: 100
+                        });
+                    }
+                })
             }
+        },
+        changeType(vale) {
+            console.log(value)
         }
     }
 </script>
 
 <style scoped>
-    .topicWrapper{
+    .topicWrapper {
         width: 700px;
         padding: 50px;
         margin: 0px auto 50px;
@@ -182,10 +245,12 @@
         border: 1px solid #D3DCE6;
         text-align: left;
     }
-    .input{
+
+    .input {
         width: 200px;
     }
-    .button{
+
+    .button {
         width: 200px;
         height: 50px;
         position: relative;
