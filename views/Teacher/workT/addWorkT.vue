@@ -90,10 +90,14 @@
                     }).then( (response) => {
                         if(response.data.result == 0) {
                             this.dialogVisible = false
+                            this.$mesage({
+                                type: 'success',
+                                message: '创建成功！'
+                            })
                         } else {
                             this.$mesage({
-                                type: 'info',
-                                message: '创建成功！'
+                                type: 'warning',
+                                message: '创建失败！'
                             })
                         }
                     })
