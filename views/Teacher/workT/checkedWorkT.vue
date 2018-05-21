@@ -42,8 +42,8 @@
                 //     this.checkedWorkListPageT = this.checkedWorkListT.slice(0,this.pageSize)
                 // }
                  if(response.data.result === 0) {
-                    this.checkingWorkListT = response.data.data.homeworks
-                    this.checkingWorkListPageT = this.checkingWorkListT.slice(0,this.pageSize)
+                    this.checkedWorkListT = response.data.data.homeworks;
+                    this.checkedWorkListPageT = this.checkedWorkListT.slice(0,this.pageSize)
                 } else {
                     this.$notify({
                         title: "未知错误！",

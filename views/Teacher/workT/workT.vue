@@ -230,7 +230,7 @@
                     if (response.data.result == 0) {
                         this.dialogVisible = false;
                         this.$notify({
-                            title: "提交作业成功！",
+                            title: "发布作业成功！",
                             type: "success",
                             offset: 100
                         });

@@ -182,6 +182,10 @@
                     if(response.data.result == 0) {
                         this.dialogVisible = false;
                         this.$router.replace("/Teacher/noticeT");
+                        this.$message({
+                            message: '发布公告成功',
+                            type: 'success'
+                        })
                     }
                     else {
                         this.$notify({

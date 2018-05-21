@@ -30,6 +30,7 @@ import passwordT from './views/Teacher/passwordT'
 import index from './views/Admin/index'
 import teacher_mgr from './views/Admin/teacher_mgr'
 import student_mgr from './views/Admin/student_mgr'
+import class_mgr from './views/Admin/class_mgr'
 import password from './views/Admin/password'
 
 Vue.use(ElementUI);
@@ -44,41 +45,49 @@ Vue.config.productionTip = false;
 
 
 const router = new VueRouter({
-  mode: 'history',
-  routes: [
-    { path: '/', component: login },
-    { path: '/Student', component: indexS,
-      children: [
-        { path: 'noticeS', component: noticeS },
-        { path: 'workDoingS', component: workDoingS },
-        { path: 'workDoneS', component: workDoneS },
-        { path: 'workFinishS', component: workFinishS },
-        { path: 'paperS', component: paperS, name:'paperS' },
-        { path: 'passwordS', component: passwordS }
-      ]},
-    { path: '/Teacher', component: indexT,
-      children: [
-        { path: 'noticeT', component: noticeT },
-        { path: 'addTopicT', component: addTopicT },
-        { path: 'queryTopicT', component: queryTopicT },
-        { path: 'addWorkT', component: addWorkT },
-        { path: 'queryWorkT', component: queryWorkT },
-        { path: 'workT', component: workT, name: 'workT' },
-        { path: 'checkingWorkT', component: checkingWorkT },
-        { path: 'checkedWorkT', component: checkedWorkT },
-        { path: 'passwordT', component: passwordT },
-      ]},
-      { path: '/Admin', component: index,
-        children: [
-          { path: 'teacher_mgr', component: teacher_mgr},
-          { path: 'student_mgr', component: student_mgr},
-          { path: 'password', component: password }
-        ]}
-] });
+    // mode: 'history',
+    routes: [
+        {path: '/', component: login},
+        {
+            path: '/Student', component: indexS,
+            children: [
+                {path: 'noticeS', component: noticeS},
+                {path: 'workDoingS', component: workDoingS},
+                {path: 'workDoneS', component: workDoneS},
+                {path: 'workFinishS', component: workFinishS},
+                {path: 'paperS', component: paperS, name: 'paperS'},
+                {path: 'passwordS', component: passwordS}
+            ]
+        },
+        {
+            path: '/Teacher', component: indexT,
+            children: [
+                {path: 'noticeT', component: noticeT},
+                {path: 'addTopicT', component: addTopicT},
+                {path: 'queryTopicT', component: queryTopicT},
+                {path: 'addWorkT', component: addWorkT},
+                {path: 'queryWorkT', component: queryWorkT},
+                {path: 'workT', component: workT, name: 'workT'},
+                {path: 'checkingWorkT', component: checkingWorkT},
+                {path: 'checkedWorkT', component: checkedWorkT},
+                {path: 'passwordT', component: passwordT},
+            ]
+        },
+        {
+            path: '/Admin', component: index,
+            children: [
+                {path: 'teacher_mgr', component: teacher_mgr},
+                {path: 'student_mgr', component: student_mgr},
+                {path: 'class_mgr', component: class_mgr},
+                {path: 'password', component: password}
+            ]
+        }
+    ]
+});
 
 new Vue({
-  el: '#app',
-  router,
-  render: h => h(App)
+    el: '#app',
+    router,
+    render: h => h(App)
 });
 

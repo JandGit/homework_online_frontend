@@ -14,6 +14,7 @@
       </el-card>
       <el-menu-item index="/Admin/teacher_mgr"><i class="el-icon-menu"></i>教师管理</el-menu-item>
       <el-menu-item index="/Admin/student_mgr"><i class="el-icon-menu"></i>学生管理</el-menu-item>
+      <el-menu-item index="/Admin/class_mgr"><i class="el-icon-menu"></i>班级管理</el-menu-item>
       <el-menu-item index="/Admin/password"><i class="el-icon-menu"></i>修改密码</el-menu-item>
       <el-menu-item index="exit" v-on:click="exit()"><i class="el-icon-menu"></i>退出登录</el-menu-item>
     </el-menu>
