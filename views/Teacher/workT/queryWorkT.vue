@@ -60,19 +60,14 @@
         methods: {
             alterWorkT: function(index,row) {
                 if(row.status == "未发布") {
-                    this.$router.push({ name: 'workT', params: { hw_id: row.hw_id, mark: 0 } })
+                    this.$router.push({ name: 'workT', params: {hw_id: row.hw_id, mark: 0}})
                 }
                 else {
-                    this.$notify({
-                        title: '已发布的作业不能编辑！',
-                        type: 'warning',
-                        offset: 100
-                    })
-                    // this.$router.push({ name: 'workT', params: { hw_id: row.hw_id, mark: 1 } })
+                    this.$router.push({ name: 'workT', params: {hw_id: row.hw_id, mark: 1}})
                 }
             },
             deleteWorkT: function(index,row) {
-                // if(row.status == "未发布") {
+                if(row.status == "未发布") {
                     this.$confirm('此操作将永久删除该作业，是否继续？','提示',{
                         type: 'warning'
                     }).then( () => {
@@ -90,7 +85,7 @@
                                 this.workListT.splice(index,1)                           
                             }
                             else {
-                                this.$notify({
+                                this.$message({
                                     title: '未知错误！',
                                     type: 'info',
                                     offset: 100
@@ -99,18 +94,18 @@
                         })
                     }).catch(() => {
                         this.$message({
-                            type: 'info',
+                            type: 'warn',
                             message: '取消删除！'
                         })
                     })
-                // }
-                // else {
-                //     this.$notify({
-                //         title: '已发布的作业不能删除！',
-                //         type: 'warning',
-                //         offset: 100
-                //     })
-                // }
+                }
+                else {
+                    this.$notify({
+                        title: '已发布的作业不能删除！',
+                        type: 'info',
+                        offset: 100
+                    })
+                }
                 
             }
         }

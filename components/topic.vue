@@ -5,14 +5,14 @@
         <br><br>
         <!-- 单选题 -->
         <div class="answerWrapper" v-if="type === 'single_choice'">
-            <el-radio v-model="value[0]" label="A" :disabled="this.disabled">{{answer[0]}}</el-radio>
-            <el-radio v-model="value[0]" label="B" :disabled="this.disabled">{{answer[1]}}</el-radio>
-            <el-radio v-model="value[0]" label="C" :disabled="this.disabled">{{answer[2]}}</el-radio>
-            <el-radio v-model="value[0]" label="D" :disabled="this.disabled">{{answer[3]}}</el-radio>
+            <el-radio class="selected_btn" v-model="value[0]" label="A" :disabled="this.disabled">A. {{answer[0]}}</el-radio>
+            <el-radio class="selected_btn" v-model="value[0]" label="B" :disabled="this.disabled">B. {{answer[1]}}</el-radio>
+            <el-radio class="selected_btn" v-model="value[0]" label="C" :disabled="this.disabled">C. {{answer[2]}}</el-radio>
+            <el-radio class="selected_btn" v-model="value[0]" label="D" :disabled="this.disabled">D. {{answer[3]}}</el-radio>
             <!--<el-radio v-for="ans in answer" :label="ans" :disabled="this.disabled" :key="ans" v-model="value">-->
                 <!--{{ ans }}-->
             <!--</el-radio>-->
-            <div class="explain" v-if="status === 'checked'">
+            <div class="explain">
                 <br><br>
                 <span>正确答案：{{answerValueT}}</span>
                 <br><br>
@@ -28,15 +28,15 @@
 
         <div class="answerWrapper" v-if="type === 'multi_choice'">
             <el-checkbox-group v-model="value">
-                <el-checkbox label="A" :disabled="this.disabled">{{answer[0]}}</el-checkbox>
-                <el-checkbox label="B" :disabled="this.disabled">{{answer[1]}}</el-checkbox>
-                <el-checkbox label="C" :disabled="this.disabled">{{answer[2]}}</el-checkbox>
-                <el-checkbox label="D" :disabled="this.disabled">{{answer[3]}}</el-checkbox>
+                <el-checkbox class="selected_btn" label="A" :disabled="this.disabled">A. {{answer[0]}}</el-checkbox>
+                <el-checkbox class="selected_btn" label="B" :disabled="this.disabled">B. {{answer[1]}}</el-checkbox>
+                <el-checkbox class="selected_btn" label="C" :disabled="this.disabled">C. {{answer[2]}}</el-checkbox>
+                <el-checkbox class="selected_btn" label="D" :disabled="this.disabled">D. {{answer[3]}}</el-checkbox>
                 <!--<el-checkbox v-for="ans in answer" :label="ans"  :key="ans" :disabled="this.disabled">-->
                     <!--{{ ans }}-->
                 <!--</el-checkbox> -->
             </el-checkbox-group>
-            <div class="explain" v-if="status === 'checked'">
+            <div class="explain">
                 <br><br>
                 <span>正确答案：{{answerValueT}}</span>
                 <br><br>
@@ -51,9 +51,9 @@
         </div>
 
         <div class="answerWrapper" v-if="type === 'judge'">
-            <el-radio v-model="value[0]" label="A" :disabled="this.disabled">对 </el-radio>
-            <el-radio v-model="value[0]" label="B" :disabled="this.disabled">错 </el-radio>
-            <div class="explain" v-if="status === 'checked'">
+            <el-radio class="selected_btn" v-model="value[0]" label="A" :disabled="this.disabled">对 </el-radio>
+            <el-radio class="selected_btn" v-model="value[0]" label="B" :disabled="this.disabled">错 </el-radio>
+            <div class="explain">
                 <br><br>
                 <span>正确答案：{{answerValueT}}</span>
                 <br><br>
@@ -135,10 +135,17 @@
         },
         mounted: function() {
             if(this.status == "checked" || this.status == undefined || this.status == 'edit' ) {
-                this.disabled = true
-                this.action = ''
+                this.disabled = true;
+                this.action = '';
             }
-            this.value = this.answerValueS;
+            if (this.answerValueS == undefined) {
+                this.value = (this.type == "free_resp" ? "" : []);
+            } else {
+                this.value = this.answerValueS;
+            }
+            if (this.answerValueT == undefined) {
+                this.answerValueT = (this.type == "free_resp" ? "" : []);
+            }
             // if(typeof(this.answerValueS)=="string") {
             //     this.value = this.answerValueS
             // }
@@ -195,6 +202,15 @@
         } 
     }
 </script>
+
+<style>
+    .selected_btn .el-radio__input.is-disabled+.el-radio__label{
+        color: black!important;
+    }
+    .selected_btn .el-checkbox__input.is-disabled+.el-checkbox__label {
+        color: black!important;
+    }
+</style>
 
 <style scoped>
     .explain{

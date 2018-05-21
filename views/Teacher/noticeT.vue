@@ -4,7 +4,6 @@
               <el-table-column label="日期" prop="date"></el-table-column>
               <el-table-column label="标题" prop="title"></el-table-column>
               <el-table-column label="发布人" prop="author"></el-table-column>
-              <el-table-column label="面向班级" prop="audiences"></el-table-column>
               <el-table-column label="操作">
                   <template scope="scope">
                       <el-button size="small" type="success" v-on:click="alterNoticeT(scope.$index, scope.row)">编辑</el-button>
@@ -24,9 +23,9 @@
           <el-dialog title="增加公告" v-model="dialogVisible">
               <el-form :model="notice">
                   <el-form-item label="面向班级：" label-width="100px">
-                       <el-select v-model="notice.audiences" multiple placeholder="请选择班级" size="large" >
+                       <el-select v-model="notice.class_list" multiple placeholder="请选择班级" size="large" >
                            <el-option
-                                v-for="item in className" :label="item.label" :value="item.value" :key="item.id">
+                                v-for="item in this.g_all_class" :label="item.class_name" :value="item.class_id" :key="item.class_id">
                            </el-option>
                        </el-select>
                   </el-form-item>
@@ -50,14 +49,11 @@
     export default{
         created: function() {
             this.$http({
-                method: 'POST',
-                url: '/api/teacher/queryNoticeT',
-                headers: {
-                    'Authorization': 'Bearer '+ localStorage.token
-                }          
+                method: 'get',
+                url: '/api/teacher/get_notices'
             }).then( response => {
-                if(response.data.errno == 200) {
-                    this.notices = response.data.data
+                if(response.data.result == 0) {
+                    this.notices = response.data.data.notices;
                 }
                 else {
                     this.$notify({
@@ -66,27 +62,17 @@
                         offset: 100
                     })
                 }
-            })
-
+            });
             this.$http({
-                method: 'POST',
-                url: '/api/teacher/indexT',
-                headers: {
-                    'Authorization': 'Bearer '+ localStorage.token
-                }
+                method: 'get',
+                url: '/api/teacher/teach_class'
             }).then( response => {
-                if(response.data.errno == 200) {
-                    this.userName = response.data.data.name
-                    for(var i = 0; i < response.data.data.class.length; i++ ) {
-                        this.className.push({   
-                            value: response.data.data.class[i]
-                        })
-                    }
-                }
-                else {
-                    this.$notify({
-                        title: '未知错误！',
-                        type: 'success',
+                if(response.data.result == 0) {
+                    this.g_all_class = response.data.data.class_list;
+                } else {
+                    this.$message({
+                        message: '未知错误！',
+                        type: 'warn',
                         offset: 100
                     })
                 }         
@@ -96,10 +82,11 @@
             return {
                 notices: [],
                 notice: {
-                    audiences: [],
+                    class_list: [],
                     title: '',
                     content: ''                
                 },
+                g_all_class: [],
                 userName: '',
                 className: [],
                 dialogVisible: false
@@ -159,21 +146,17 @@
                 }).then(() => {
                     this.$http({
                         method: 'POST',
-                        url: '/api/teacher/deleteNoticeT',
-                        headers: {
-                             'Authorization': 'Bearer '+ localStorage.token
-                        },
-                        body: {
-                            "id": row.id
+                        url: '/api/teacher/del_notice',
+                        data: {
+                            "notice_id": row.notice_id
                         }
                     }).then( response => {
-                        if(response.data.errno == 200){
+                        if(response.data.result == 0){
                             this.notices.splice(index,1)
-                        }
-                        else {
-                            this.$notify({
-                                title: '未知错误！',
-                                type: 'success',
+                        } else {
+                            this.$message({
+                                message: '未知错误！',
+                                type: 'warn',
                                 offset: 100
                             })
                         }
@@ -189,23 +172,16 @@
                 if(this.notice.title != '' && this.notice.audiences != '' &&　this.notice.content != ''){
                     this.$http({
                     method: 'POST',
-                    url: '/api/Teacher/addNoticeT',
-                    headers: {
-                             'Authorization': 'Bearer '+ localStorage.token
-                    },
-                    body: {                     
+                    url: '/api/teacher/add_notice',
+                    data: {
                         title: this.notice.title,
-                        date: this.currentDate,
-                        author: this.userName,
-                        audiences: this.notice.audiences,
+                        class_list: this.notice.class_list,
                         content: this.notice.content        
                     }
                 }).then(response => {
-                    if(response.data.errno == 200) {
-                        this.dialogVisible = false
-                        this.notice.author = this.userName,
-                        this.notice.date = this.currentDate
-                        this.notices.push(this.notice)
+                    if(response.data.result == 0) {
+                        this.dialogVisible = false;
+                        this.$router.replace("/Teacher/noticeT");
                     }
                     else {
                         this.$notify({

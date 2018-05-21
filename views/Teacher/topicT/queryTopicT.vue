@@ -28,24 +28,24 @@
                     </el-dialog>
                 </template>
             </el-table-column>
-            <el-table-column type="expand">
+            <el-table-column type="expand" class="select">
                 <template scope="scope">
                         <el-form>
                             <el-form-item v-if="scope.row.ques_type == '单选题'" label="">
-                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="A" :disabled=true>{{scope.row.answer.choices[0]}}</el-radio>
-                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="B" :disabled=true>{{scope.row.answer.choices[1]}}</el-radio>
-                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="C" :disabled=true>{{scope.row.answer.choices[2]}}</el-radio>
-                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="D" :disabled=true>{{scope.row.answer.choices[3]}}</el-radio>
+                                <el-radio class="selected_btn" v-model="scope.row.answer.answer[0]" label="A" :disabled=true>A. {{scope.row.answer.choices[0]}}</el-radio>
+                                <el-radio class="selected_btn" v-model="scope.row.answer.answer[0]" label="B" :disabled=true>B. {{scope.row.answer.choices[1]}}</el-radio>
+                                <el-radio class="selected_btn" v-model="scope.row.answer.answer[0]" label="C" :disabled=true>C. {{scope.row.answer.choices[2]}}</el-radio>
+                                <el-radio class="selected_btn" v-model="scope.row.answer.answer[0]" label="D" :disabled=true>D. {{scope.row.answer.choices[3]}}</el-radio>
                             </el-form-item>
                             <el-form-item v-if="scope.row.ques_type == '多选题'" label="">
-                                <el-checkbox class="select" v-model="scope.row.answer.answer" label="A" :disabled=true>{{scope.row.answer.choices[0]}}</el-checkbox>
-                                <el-checkbox class="select" v-model="scope.row.answer.answer" label="B" :disabled=true>{{scope.row.answer.choices[1]}}</el-checkbox>
-                                <el-checkbox class="select" v-model="scope.row.answer.answer" label="C" :disabled=true>{{scope.row.answer.choices[2]}}</el-checkbox>
-                                <el-checkbox class="select" v-model="scope.row.answer.answer" label="D" :disabled=true>{{scope.row.answer.choices[3]}}</el-checkbox>
+                                <el-checkbox class="selected_btn" v-model="scope.row.answer.answer" label="A" :disabled=true>A. {{scope.row.answer.choices[0]}}</el-checkbox>
+                                <el-checkbox class="selected_btn" v-model="scope.row.answer.answer" label="B" :disabled=true>B. {{scope.row.answer.choices[1]}}</el-checkbox>
+                                <el-checkbox class="selected_btn" v-model="scope.row.answer.answer" label="C" :disabled=true>C. {{scope.row.answer.choices[2]}}</el-checkbox>
+                                <el-checkbox class="selected_btn" v-model="scope.row.answer.answer" label="D" :disabled=true>D. {{scope.row.answer.choices[3]}}</el-checkbox>
                             </el-form-item>
                             <el-form-item v-if="scope.row.ques_type == '判断题'" label="">
-                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="A" :disabled=true></el-radio>
-                                <el-radio class="select" v-model="scope.row.answer.answer[0]" label="B" :disabled=true></el-radio>
+                                <el-radio class="selected_btn" v-model="scope.row.answer.answer[0]" label="A" :disabled=true>对 </el-radio>
+                                <el-radio class="selected_btn" v-model="scope.row.answer.answer[0]" label="B" :disabled=true>错 </el-radio>
                             </el-form-item>
                             <el-form-item v-if="scope.row.ques_type == '问答题'" label="">
                                 <span>{{scope.row.ques_content}}</span>
@@ -266,6 +266,15 @@
 
 </script>
 
+<style>
+    .selected_btn .el-radio__input.is-disabled+.el-radio__label{
+        color: black!important;
+    }
+    .selected_btn .el-checkbox__input.is-disabled+.el-checkbox__label {
+        color: black!important;
+    }
+</style>
+
 <style scoped>
     .searchInput{
         width: 1000px;
@@ -291,8 +300,5 @@
     }
     .dialog-footer{
         text-align: right;
-    }
-    .select.el-radio__input.is-disabled+.el-radio__label{
-        color: black !important;
     }
 </style>

@@ -24,9 +24,9 @@
                     >
                 </topic>
                 <br><br>
-                <span v-if="this.paper.status === 'checked' ">批注：{{this.paper.postil}}</span>
+                <span v-if="this.paper.status === 'checked'" style="color: red;">批注：{{this.paper.comment}}</span>
                 <br><br>
-                <span v-if="this.paper.status === 'checked' " style="text-align: center; display: block; font-size: 50px; color: red; text-decoration: underline; font-weight: bold;">&nbsp;{{this.paper.score}}分&nbsp;</span>
+                <span v-if="this.paper.status === 'checked'" style="text-align: center; display: block; font-size: 50px; color: red; text-decoration: underline; font-weight: bold;">&nbsp;{{this.paper.score}}分&nbsp;</span>
             </div>
             <el-button class="submit" v-on:click="show = true" size="large" type="success" :disabled="this.disabled">提交作业</el-button>
             <el-dialog title="提示" v-model="show" size="small" top="30%">

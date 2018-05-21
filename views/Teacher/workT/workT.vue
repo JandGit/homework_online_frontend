@@ -3,7 +3,7 @@
         <div class="paper">
             <span>{{this.paper.title}}</span>
             <br><br>
-            <span v-if="mark == 0" style="text-align: left; display: block; float: left">{{this.classNames}}</span>
+            <span v-if="mark == 0" style="text-align: left; display: block; float: left">面向班级：{{this.classNames}}</span>
             <span v-if="mark == 2|3" style="text-align: left; display: block; float: left">{{this.paper.stu_id}}</span>
             <span v-if="mark == 2|3"
                   style="text-align: left; display: block; float: right">{{this.paper.stu_name}}</span>
@@ -12,6 +12,7 @@
                 <!-- :index = "topic.index" -->
                 <!-- :answerValueS = "topic.answerValueT" -->
                 <!-- :answerExplain = "topic.answerExplain" -->
+                <span v-if="paper.questions.length == 0">没有题目</span>
                 <topic v-for="(topic, index) in paper.questions"
                        v-on:listen="doing"
                        :key="topic.ques_id"
@@ -21,17 +22,18 @@
                        :type="topic.ques_type"
                        :status="topic.status"
                        :answer="topic.answer.choices"
+                       :answerValueT="topic.answer.answer"
                        :answerValueS="topic.stu_answer"
                 >
                 </topic>
                 <br><br>
-                <div v-if="this.paper.status != 'checked'">
+                <div v-if="this.paper.status != 'checked' && this.mark == 2|3">
                     <span style="line-height: 50px;">批注：</span>
-                    <el-input v-model="paper.comment" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
+                    <el-input v-model="paper.comment" type="textarea" :autosize="{minRows: 2, maxRows: 4}"
                               style="width: 500px;"></el-input>
                     <br><br>
                     <span>分数：</span>
-                    <el-input v-model="paper.score" max="100" type="number" style="width: 500px;"></el-input>
+                    <el-input v-model="paper.score" max=100 type="number" style="width: 500px;"></el-input>
                 </div>
                 <div v-if="this.paper.status == 'checked'">
                     <br><br>
@@ -71,19 +73,6 @@
         created: function () {
             var url;
             this.mark = this.$route.params.mark;
-            // if(this.$route.params.mark == 0 ) {
-            //     url = '/api/teacher/workDoingT'
-            // }
-            // else if(this.$route.params.mark == 1) {
-            //     url = '/api/teacher/workFinishT'
-            //     this.btnDisabled = true
-            // }
-            // else if(this.$route.params.mark == 2) {
-            //     url = '/api/teacher/checkingWorkT'
-            // }
-            // else if(this.$route.params.mark == 3) {
-            //     url = '/api/teacher/checkedWorkT'
-            // }
             var postData;
             if (this.mark == 0 || this.mark == 1) {
                 postData = {
@@ -104,12 +93,6 @@
             }).then(response => {
                 if (response.data.result === 0) {
                     this.paper = response.data.data;
-                    if (this.mark == 0) {
-                        for (var i = 0; i < this.paper.questions.length; i++) {
-                            // this.paper.questions[i].index = i+1
-                            this.paper.questions[i].status = "edit";
-                        }
-                    }
                     // else {
                     //     for (var i=0; i< this.paper.topics.length; i++) {
                     //         this.paper.topics[i].index = i+1
@@ -123,17 +106,6 @@
                     });
                     this.$router.replace("/");
                 }
-                // if(this.mark == 0){
-                //     for (var i=0; i< this.paper.topics.length; i++) {
-                //         this.paper.topics[i].index = i+1
-                //         this.paper.topics[i].status = 'edit'
-                //     }
-                // }
-                // else {
-                //     for (var i=0; i< this.paper.topics.length; i++) {
-                //         this.paper.topics[i].index = i+1
-                //     }
-                // }
             });
         },
         data: function () {
@@ -149,7 +121,7 @@
                 if (this.paper.class_names) {
                     var audiences = "";
                     for (var i = 0; i < this.paper.class_names.length; i++) {
-                        audiences = audiences + " " + this.paper.class_name[i];
+                        audiences = audiences + " " + this.paper.class_names[i];
                     }
                     return audiences;
                 }
@@ -273,20 +245,19 @@
                 });
             },
             submitScoreT: function () {
+                this.paper.score = parseInt(this.paper.score);
                 this.$http({
                     method: "POST",
                     url: "/api/teacher/stu_homeworks/check",
                     // headers: {
                     //     'Authorization': 'Bearer '+ localStorage.token
                     // },
-                    data: {
-                        paper: this.paper
-                    }
+                    data: this.paper
                 }).then(response => {
                     if (response.data.result == 0) {
                         this.dialogVisible = false;
-                        this.$notify({
-                            title: "提交作业成功！",
+                        this.$message({
+                            message: "批改成功！",
                             type: "success",
                             offset: 100
                         });
