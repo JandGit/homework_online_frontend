@@ -40,6 +40,9 @@
                 if(response.data.result === 0) {
                     this.checkingWorkListT = response.data.data.homeworks;
                     this.checkingWorkListPageT = this.checkingWorkListT.slice(0,this.pageSize)
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
                 } else {
                     this.$notify({
                         title: "未知错误！",
@@ -48,16 +51,14 @@
                     });
                     this.$router.replace("/");
                 }
-                // if(response.data.errno == 200) {
-                //     this.checkingWorkListT = response.data.data
-                // }
             })
         },
         data: function() {
             return {
                 checkingWorkListT: [],
                 checkingWorkListPageT: [],
-                pageSize: 10
+                pageSize: 10,
+                ERRCODE_RELOGIN: 1
             }
         },
         methods: {

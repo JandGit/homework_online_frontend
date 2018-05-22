@@ -46,8 +46,10 @@
                 if (response.data.result == 0) {
                     this.userName = response.data.data.t_name;
                     this.className = response.data.data.dept_name;
-                }
-                else {
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
+                } else {
                     this.$notify({
                         title: '未知错误！',
                         type: 'success',
@@ -60,7 +62,8 @@
         data: function () {
             return {
                 userName: '',
-                className: ''
+                className: '',
+                ERRCODE_RELOGIN: 1
             }
         },
         computed: {

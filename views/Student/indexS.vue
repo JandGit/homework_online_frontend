@@ -3,7 +3,8 @@
         <el-menu class="menu" theme="dark" default-active="/Student/noticeS" :router=true>
             <el-card class="userCard">
                 <div class="imgWrapper">
-                    <img src="https://img.alicdn.com/imgextra/i2/855439689/TB2RcHTg90mpuFjSZPiXXbssVXa_!!855439689.png" alt=" moon.png"/>
+                    <img src="https://img.alicdn.com/imgextra/i2/855439689/TB2RcHTg90mpuFjSZPiXXbssVXa_!!855439689.png"
+                         alt=" moon.png"/>
                 </div>
                 <div style="padding: 10px;">
                     <span style="color: white">{{userName}}</span>
@@ -30,88 +31,96 @@
 </template>
 
 <script>
-export default {
-  created: function() {
-    this.$http({
-      method: "post",
-      url: "/api/student/student_info"
-    }).then(response => {
-      if (response.data.result === 0) {
-          this.userName = response.data.data.student_name;
-          this.className = response.data.data.class_name;
-      } else {
-          this.$notify({
-              title: '未知错误！',
-              type: 'success',
-              offset: 100
-          })
-        this.$router.replace("/");
-      }
-    });
-  },
-  data: function() {
-    return {
-      userName: "",
-      className: ""
+    export default {
+        created: function () {
+            this.$http({
+                method: "post",
+                url: "/api/student/student_info"
+            }).then(response => {
+                if (response.data.result === 0) {
+                    this.userName = response.data.data.student_name;
+                    this.className = response.data.data.class_name;
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
+                } else {
+                    this.$notify({
+                        title: '未知错误！',
+                        type: 'success',
+                        offset: 100
+                    })
+                    this.$router.replace("/");
+                }
+            });
+        },
+        data: function () {
+            return {
+                userName: "",
+                className: "",
+                ERRCODE_RELOGIN: 1
+            };
+        },
+        computed: {
+            currentDate: function () {
+                var currentDate = new Date();
+                var month = currentDate.getMonth() + 1;
+                var day = currentDate.getDate();
+                if (month < 10) {
+                    month = String("0" + month);
+                }
+                if (day < 10) {
+                    day = String("0" + day);
+                }
+                return currentDate.getFullYear() + "-" + month + "-" + day;
+            }
+        },
+        methods: {
+            exit: function () {
+                this.$router.replace("/");
+            }
+        }
     };
-  },
-  computed: {
-    currentDate: function() {
-      var currentDate = new Date();
-      var month = currentDate.getMonth() + 1;
-      var day = currentDate.getDate();
-      if (month < 10) {
-        month = String("0" + month);
-      }
-      if (day < 10) {
-        day = String("0" + day);
-      }
-      return currentDate.getFullYear() + "-" + month + "-" + day;
-    }
-  },
-  methods: {
-    exit: function() {
-      this.$router.replace("/");
-    }
-  }
-};
 </script>
 
 <style scoped>
-.menu {
-  width: 300px;
-  height: 100%;
-  text-align: left;
-  letter-spacing: 3px;
-  position: fixed;
-  overflow-y: auto;
-}
+    .menu {
+        width: 300px;
+        height: 100%;
+        text-align: left;
+        letter-spacing: 3px;
+        position: fixed;
+        overflow-y: auto;
+    }
 
-.menu::-webkit-scrollbar{
-  width: 10px;
-}
-.menu::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-}
-.menu::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-}
+    .menu::-webkit-scrollbar {
+        width: 10px;
+    }
 
-.userCard {
-  border: 0;
-  background: #324057;
-}
-.imgWrapper {
-  width: 150px;
-  height: 150px;
-  margin: 20px auto 0;
-}
-.content {
-  width: 80%;
-  height: 100%;
-  margin-left: 300px;
-}
+    .menu::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+    }
+
+    .menu::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.1);
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .userCard {
+        border: 0;
+        background: #324057;
+    }
+
+    .imgWrapper {
+        width: 150px;
+        height: 150px;
+        margin: 20px auto 0;
+    }
+
+    .content {
+        width: 80%;
+        height: 100%;
+        margin-left: 300px;
+    }
 </style>

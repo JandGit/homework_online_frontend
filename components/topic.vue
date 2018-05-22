@@ -1,94 +1,84 @@
 <template>
     <div class="topicWrapper">
         <span>{{index + 1}}.</span>
-        <span>{{question}}</span>      
+        <span>{{ques_content}}</span>      
         <br><br>
         <!-- 单选题 -->
-        <div class="answerWrapper" v-if="type === 'single_choice'">
-            <el-radio class="selected_btn" v-model="value[0]" label="A" :disabled="this.disabled">A. {{answer[0]}}</el-radio>
-            <el-radio class="selected_btn" v-model="value[0]" label="B" :disabled="this.disabled">B. {{answer[1]}}</el-radio>
-            <el-radio class="selected_btn" v-model="value[0]" label="C" :disabled="this.disabled">C. {{answer[2]}}</el-radio>
-            <el-radio class="selected_btn" v-model="value[0]" label="D" :disabled="this.disabled">D. {{answer[3]}}</el-radio>
-            <!--<el-radio v-for="ans in answer" :label="ans" :disabled="this.disabled" :key="ans" v-model="value">-->
-                <!--{{ ans }}-->
-            <!--</el-radio>-->
-            <div class="explain">
+        <div class="answerWrapper" v-if="ques_type === 'single_choice'">
+            <el-radio class="selected_btn" v-model="stu_answer[0]" label="A" :disabled="!editable">A. {{choices[0]}}</el-radio>
+            <el-radio class="selected_btn" v-model="stu_answer[0]" label="B" :disabled="!editable">B. {{choices[1]}}</el-radio>
+            <el-radio class="selected_btn" v-model="stu_answer[0]" label="C" :disabled="!editable">C. {{choices[2]}}</el-radio>
+            <el-radio class="selected_btn" v-model="stu_answer[0]" label="D" :disabled="!editable">D. {{choices[3]}}</el-radio>
+            <div class="explain" v-if="show_right_answer">
                 <br><br>
-                <span>正确答案：{{answerValueT}}</span>
+                <span>正确答案：{{right_answer}}</span>
                 <br><br>
-                <span>本题解析：{{answerExplain}}</span>
+                <span>本题解析：{{explain}}</span>
             </div> 
             <br><br>
-            <div class="arrow" v-if="status == 'edit'">
-                <!-- <el-button class="button" type="success" icon="arrow-up" v-on:click="upTopic()"></el-button> -->
-                <!-- <el-button class="button" type="success" icon="arrow-down" v-on:click="downTopic()"></el-button> -->
+            <div class="arrow" v-if="show_hw_ctl_btn">
+                 <el-button class="button" type="success" icon="arrow-up" v-on:click="upTopic()"></el-button>
+                 <el-button class="button" type="success" icon="arrow-down" v-on:click="downTopic()"></el-button>
                 <el-button class="button" type="danger" icon="delete" v-on:click="deleteTopic()"></el-button>
             </div>     
         </div>
 
-        <div class="answerWrapper" v-if="type === 'multi_choice'">
-            <el-checkbox-group v-model="value">
-                <el-checkbox class="selected_btn" label="A" :disabled="this.disabled">A. {{answer[0]}}</el-checkbox>
-                <el-checkbox class="selected_btn" label="B" :disabled="this.disabled">B. {{answer[1]}}</el-checkbox>
-                <el-checkbox class="selected_btn" label="C" :disabled="this.disabled">C. {{answer[2]}}</el-checkbox>
-                <el-checkbox class="selected_btn" label="D" :disabled="this.disabled">D. {{answer[3]}}</el-checkbox>
-                <!--<el-checkbox v-for="ans in answer" :label="ans"  :key="ans" :disabled="this.disabled">-->
-                    <!--{{ ans }}-->
-                <!--</el-checkbox> -->
+        <div class="answerWrapper" v-if="ques_type === 'multi_choice'">
+            <el-checkbox-group v-model="stu_answer">
+                <el-checkbox class="selected_btn" label="A" :disabled="!editable">A. {{choices[0]}}</el-checkbox>
+                <el-checkbox class="selected_btn" label="B" :disabled="!editable">B. {{choices[1]}}</el-checkbox>
+                <el-checkbox class="selected_btn" label="C" :disabled="!editable">C. {{choices[2]}}</el-checkbox>
+                <el-checkbox class="selected_btn" label="D" :disabled="!editable">D. {{choices[3]}}</el-checkbox>
             </el-checkbox-group>
-            <div class="explain">
+            <div class="explain" v-if="show_right_answer">
                 <br><br>
-                <span>正确答案：{{answerValueT}}</span>
+                <span>正确答案：{{right_answer}}</span>
                 <br><br>
-                <span>本题解析：{{answerExplain}}</span>
+                <span>本题解析：{{explain}}</span>
             </div>
             <br>
-            <div class="arrow" v-if="status == 'edit'">
-                <!-- <el-button class="button" type="success" icon="arrow-up" v-on:click="upTopic()"></el-button> -->
-                <!-- <el-button class="button" type="success" icon="arrow-down" v-on:click="downTopic()"></el-button> -->
+            <div class="arrow" v-if="show_hw_ctl_btn">
+                 <el-button class="button" type="success" icon="arrow-up" v-on:click="upTopic()"></el-button>
+                 <el-button class="button" type="success" icon="arrow-down" v-on:click="downTopic()"></el-button>
                 <el-button class="button" type="danger" icon="delete" v-on:click="deleteTopic()"></el-button>
             </div>
         </div>
 
-        <div class="answerWrapper" v-if="type === 'judge'">
-            <el-radio class="selected_btn" v-model="value[0]" label="A" :disabled="this.disabled">对 </el-radio>
-            <el-radio class="selected_btn" v-model="value[0]" label="B" :disabled="this.disabled">错 </el-radio>
-            <div class="explain">
+        <div class="answerWrapper" v-if="ques_type === 'judge'">
+            <el-radio class="selected_btn" v-model="stu_answer[0]" label="A" :disabled="!editable">A. 对</el-radio>
+            <el-radio class="selected_btn" v-model="stu_answer[0]" label="B" :disabled="!editable">B. 错</el-radio>
+            <div class="explain" v-if="show_right_answer">
                 <br><br>
-                <span>正确答案：{{answerValueT}}</span>
+                <span>正确答案：{{right_answer}}</span>
                 <br><br>
-                <span>本题解析：{{answerExplain}}</span>
+                <span>本题解析：{{explain}}</span>
             </div>
             <br><br>
-            <div class="arrow" v-if="status == 'edit'">
-                <!-- <el-button class="button" type="success" icon="arrow-up" v-on:click="upTopic()"></el-button> -->
-                <!-- <el-button class="button" type="success" icon="arrow-down" v-on:click="downTopic()"></el-button> -->
+            <div class="arrow" v-if="show_hw_ctl_btn">
+                 <el-button class="button" type="success" icon="arrow-up" v-on:click="upTopic()"></el-button>
+                 <el-button class="button" type="success" icon="arrow-down" v-on:click="downTopic()"></el-button>
                 <el-button class="button" type="danger" icon="delete" v-on:click="deleteTopic()"></el-button>
             </div>
         </div>
 
-        <div class="answerWrapper" v-if="type === 'free_resp'">
+        <div class="answerWrapper" v-if="ques_type === 'free_resp'">
             <el-input
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 8}"
-                placeholder="请输入内容"
-                v-model="value"
-                :disabled="this.disabled">
+                placeholder=""
+                v-model="stu_answer"
+                :disabled="!editable">
             </el-input>         
-            <div class="explain" v-if="status === 'checked'">
+            <div class="explain" v-if="show_right_answer">
                 <br><br>
-                <span>正确答案：{{answerValueT}}</span>
-                <br><br>
-                <span>本题解析：{{answerExplain}}</span>
+                <span>本题解析：{{explain}}</span>
             </div>
             <br><br>
-            <div class="arrow" v-if="status == 'edit'">
-                <!-- <el-button class="button" type="success" icon="arrow-up" v-on:click="upTopic()"></el-button> -->
-                <!-- <el-button class="button" type="success" icon="arrow-down" v-on:click="downTopic()"></el-button> -->
+            <div class="arrow" v-if="show_hw_ctl_btn">
                 <el-button class="button" type="danger" icon="delete" v-on:click="deleteTopic()"></el-button>
             </div>
         </div>
-        <div class="answerWrapper" v-if="type === 'file'">
+        <div class="answerWrapper" v-if="ques_type === 'file'">
             <el-upload           
                 accept="image/*"
                 list-type="picture-card"
@@ -103,14 +93,11 @@
                 <img width="100%" :src="value">
             </el-dialog>
             <br>
-            <div v-if="status === 'checked'" style="font-size: 10px; color: red;">
-                <span v-if="status === 'checked'" style="font-size: 10px; color: red;">本题解析：{{answerExplain}}</span>
+            <div class="explain" v-if="show_right_answer">
                 <br><br>
-                正确答案: 
-                <br>         
-                <img v-for="item in answerValueT" :src="item.url" style="width: 300px; height: 300px;"><br><br><br>
+                <span>本题解析：{{explain}}</span>
             </div>
-            <div class="arrow" v-if="status == 'edit'">
+            <div class="arrow" v-if="show_hw_ctl_btn">
                 <!-- <el-button class="button" type="success" icon="arrow-up" v-on:click="upTopic()"></el-button> -->
                 <!-- <el-button class="button" type="success" icon="arrow-down" v-on:click="downTopic()"></el-button> -->
                 <el-button class="button" type="danger" icon="delete" v-on:click="deleteTopic()"></el-button>
@@ -123,36 +110,31 @@
 <script>
     export default{
         props: {
-            id: Number,
+            ques_id: Number,
             index: Number,
-            question: String,
-            type: String,
+            ques_content: String,
+            ques_type: String,
             status: String,
-            answer: Object|Array,
-            answerValueS: Object|String,
-            answerValueT: Object|String,
-            answerExplain: String
+            choices: Object | Array,
+            stu_answer: Object | Array,
+            right_answer: Object|String,
+            explain: String,
+            show_right_answer: Boolean,
+            editable: Boolean,
+            show_hw_ctl_btn: Boolean
         },
         mounted: function() {
-            if(this.status == "checked" || this.status == undefined || this.status == 'edit' ) {
-                this.disabled = true;
-                this.action = '';
-            }
-            if (this.answerValueS == undefined) {
-                this.value = (this.type == "free_resp" ? "" : []);
-            } else {
-                this.value = this.answerValueS;
-            }
-            if (this.answerValueT == undefined) {
-                this.answerValueT = (this.type == "free_resp" ? "" : []);
-            }
+            // if (this.right_answer == undefined) {
+            //     this.right_answer = (this.ques_type == "free_resp" ? "" : []);
+            // }
+            console.log("show_right_answer:" + this.show_right_answer);
             // if(typeof(this.answerValueS)=="string") {
             //     this.value = this.answerValueS
             // }
-            // else if(this.type == "multi_choice") {
+            // else if(this.ques_type == "multi_choice") {
             //     this.list = this.answerValueS
             // }
-            // else if(this.type == "file") {
+            // else if(this.ques_type == "file") {
             //     this.fileList = this.answerValueS
             // }
         },
@@ -171,7 +153,7 @@
                 this.fileList = fileList
             },
             preview(file) {            
-                this.value = file.url
+                this.value = file.url;
                 this.show = true;
             },
             remove(file,fileList) { 
@@ -205,10 +187,14 @@
 
 <style>
     .selected_btn .el-radio__input.is-disabled+.el-radio__label{
-        color: black!important;
+        color: black;
     }
     .selected_btn .el-checkbox__input.is-disabled+.el-checkbox__label {
-        color: black!important;
+        color: black;
+    }
+
+    .answerWrapper .el-textarea.is-disabled .el-textarea__inner {
+        color: black;
     }
 </style>
 

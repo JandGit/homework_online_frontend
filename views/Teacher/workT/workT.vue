@@ -3,27 +3,26 @@
         <div class="paper">
             <span>{{this.paper.title}}</span>
             <br><br>
-            <span v-if="mark == 0" style="text-align: left; display: block; float: left">面向班级：{{this.classNames}}</span>
             <span v-if="mark == 2|3" style="text-align: left; display: block; float: left">{{this.paper.stu_id}}</span>
             <span v-if="mark == 2|3"
                   style="text-align: left; display: block; float: right">{{this.paper.stu_name}}</span>
             <br><br>
             <div class="topics">
-                <!-- :index = "topic.index" -->
-                <!-- :answerValueS = "topic.answerValueT" -->
-                <!-- :answerExplain = "topic.answerExplain" -->
-                <span v-if="paper.questions.length == 0">没有题目</span>
+                <span v-if="paper.questions.length == 0" style="color: gray">没有题目</span>
                 <topic v-for="(topic, index) in paper.questions"
+                       v-bind:show_right_answer="true"
+                       v-bind:editable="false"
+                       v-bind:show_hw_ctl_btn="paper.status == 'unpublished'"
                        v-on:listen="doing"
-                       :key="topic.ques_id"
-                       :id="topic.ques_id"
+                       :key="index"
+                       :ques_id="topic.ques_id"
                        :index="index"
-                       :question="topic.ques_content"
-                       :type="topic.ques_type"
+                       :ques_content="topic.ques_content"
+                       :ques_type="topic.ques_type"
                        :status="topic.status"
-                       :answer="topic.answer.choices"
-                       :answerValueT="topic.answer.answer"
-                       :answerValueS="topic.stu_answer"
+                       :choices="topic.answer.choices"
+                       :right_answer="topic.answer.answer"
+                       :stu_answer="topic.stu_answer != undefined ? topic.stu_answer : []"
                 >
                 </topic>
                 <br><br>
@@ -37,7 +36,7 @@
                 </div>
                 <div v-if="this.paper.status == 'checked'">
                     <br><br>
-                    <span>批注：{{this.paper.comment}}</span>
+                    <span style="color: red">批注：{{this.paper.comment}}</span>
                     <br><br>
                     <span style="text-align: center; display: block; font-size: 50px; color: red; text-decoration: underline; font-weight: bold;">&nbsp;{{this.paper.score}}分&nbsp;</span>
                 </div>
@@ -98,6 +97,9 @@
                     //         this.paper.topics[i].index = i+1
                     //     }
                     // }
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
                 } else {
                     this.$notify({
                         title: "未知错误！",
@@ -113,7 +115,8 @@
                 paper: {},
                 mark: null,
                 btnDisabled: false,
-                dialogVisible: false
+                dialogVisible: false,
+                ERRCODE_RELOGIN: 1
             };
         },
         computed: {
@@ -187,6 +190,9 @@
                                                 this.paper.questions.splice(i, 1);
                                             }
                                         }
+                                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                                        this.$message("登录信息过期，请重新登录");
+                                        this.$router.replace("/");
                                     } else {
                                         this.$notify({
                                             title: "未知错误！",
@@ -235,6 +241,9 @@
                             offset: 100
                         });
                         this.$router.back();
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
                     } else {
                         this.$notify({
                             title: "未知错误！",
@@ -249,9 +258,6 @@
                 this.$http({
                     method: "POST",
                     url: "/api/teacher/stu_homeworks/check",
-                    // headers: {
-                    //     'Authorization': 'Bearer '+ localStorage.token
-                    // },
                     data: this.paper
                 }).then(response => {
                     if (response.data.result == 0) {
@@ -262,6 +268,9 @@
                             offset: 100
                         });
                         this.$router.back();
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
                     } else {
                         this.$notify({
                             title: "未知错误！",

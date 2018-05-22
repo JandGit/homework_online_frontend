@@ -8,56 +8,59 @@
             <el-table-column label="操作">
                 <template scope="scope">
                     <el-button size="small" type="success" v-on:click="start(scope.$index, scope.row)">编辑作业</el-button>
-                </template>           
+                </template>
             </el-table-column>
         </el-table>
     </div>
 </template>
- 
+
 <script>
-export default {
-  created: function() {
-    this.$http({
-      method: "POST",
-      url: "/api/student/homeworks",
-      data: {
-        homework_type: "unfinished"
-      }
-    }).then(response => {
-      if (response.data.result === 0) {
-        this.workDoingSList = response.data.data.homeworks;
-      } else {
-        this.$notify({
-          title: "未知错误！",
-          type: "success",
-          offset: 100
-        });
-        this.$router.replace("/");
-      }
-    });
-  },
-  data: function() {
-    return {
-      workDoingSList: []
+    export default {
+        created: function () {
+            this.$http({
+                method: "POST",
+                url: "/api/student/homeworks",
+                data: {
+                    homework_type: "unfinished"
+                }
+            }).then(response => {
+                if (response.data.result === 0) {
+                    this.workDoingSList = response.data.data.homeworks;
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
+                } else {
+                    this.$notify({
+                        title: "未知错误！",
+                        type: "success",
+                        offset: 100
+                    });
+                }
+            });
+        },
+        data: function () {
+            return {
+                workDoingSList: [],
+                ERRCODE_RELOGIN: 1
+            };
+        },
+        methods: {
+            start(index, row) {
+                this.$router.push({
+                    name: "paperS",
+                    params: {hw_id: row.hw_id, mark: -1}
+                });
+            }
+        }
     };
-  },
-  methods: {
-    start(index, row) {
-      this.$router.push({
-        name: "paperS",
-        params: { hw_id: row.hw_id, mark: -1 }
-      });
-    }
-  }
-};
 </script>
 
 <style scoped>
-.table {
-  width: 70%;
-  margin: 0 auto;
-  position: relative;
-  top: 100px;
-  text-align: left;
-}
+    .table {
+        width: 70%;
+        margin: 0 auto;
+        position: relative;
+        top: 100px;
+        text-align: left;
+    }
 </style>

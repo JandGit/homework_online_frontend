@@ -64,7 +64,8 @@
                 g_new_class_info: {class_name: ""},
                 g_alter_class_info: {class_name: ""},
                 g_show_add_stu: false,
-                g_show_alter_stu: false
+                g_show_alter_stu: false,
+                ERRCODE_RELOGIN: 1
             }
         },
         methods: {
@@ -95,6 +96,9 @@
                 }).then(response => {
                     if (response.data.result == 0) {
                         this.g_all_class = response.data.data.class_list;
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
                     } else {
                         this.$message({
                             message: '数据获取失败',
@@ -118,6 +122,9 @@
                         });
                         this.g_show_add_stu = false;
                         this.get_class_info();
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
                     } else {
                         this.$message({
                             message: '新增失败',
@@ -140,6 +147,9 @@
                             message: '删除成功',
                             type: 'success',
                         });
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
                     } else {
                         this.$message({
                             message: '删除失败',
@@ -164,6 +174,9 @@
                             type: 'success',
                         });
                         this.g_show_alter_stu = false;
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
                     } else {
                         this.$message({
                             message: '修改失败',

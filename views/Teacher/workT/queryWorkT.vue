@@ -29,6 +29,9 @@
             }).then( (response) => {
                 if(response.data.result == 0) {
                     this.workListT = response.data.data.homeworks
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
                 } else {
                     this.$notify({
                         title: "未知错误！",
@@ -42,6 +45,7 @@
         data: function() {
             return {
                 workListT: [],
+                ERRCODE_RELOGIN: 1
             }
         },
         watch: {
@@ -83,8 +87,10 @@
                         }).then( (response) => {
                             if(response.data.errno == 200){
                                 this.workListT.splice(index,1)                           
-                            }
-                            else {
+                            } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                                this.$message("登录信息过期，请重新登录");
+                                this.$router.replace("/");
+                            } else {
                                 this.$message({
                                     title: '未知错误！',
                                     type: 'info',

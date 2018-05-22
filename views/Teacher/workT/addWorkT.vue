@@ -51,6 +51,9 @@
             }).then( (response) => {
                 if(response.data.result == 0) {
                     this.g_all_class_list = response.data.data.class_list;
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
                 } else {
                     this.$notify({
                         title: '服务器出现错误！',
@@ -71,7 +74,8 @@
                 dateStart: '',
                 dateFinish: '',
                 date_start: '',
-                date_end: ''
+                date_end: '',
+                ERRCODE_RELOGIN: 1
             }
         },
         methods: {
@@ -89,11 +93,15 @@
                         }
                     }).then( (response) => {
                         if(response.data.result == 0) {
-                            this.dialogVisible = false
-                            this.$mesage({
+                            this.dialogVisible = false;
+                            this.$message({
                                 type: 'success',
                                 message: '创建成功！'
-                            })
+                            });
+                            this.$router.replace("/Teacher/queryWorkT");
+                        } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                            this.$message("登录信息过期，请重新登录");
+                            this.$router.replace("/");
                         } else {
                             this.$mesage({
                                 type: 'warning',
@@ -101,14 +109,13 @@
                             })
                         }
                     })
-                }
-                else {
+                } else {
                     this.$notify({
                         title: '请填写内容！',
                         type: 'warning',
                         offset: 100
                     });
-                    this.dialogVisible = false
+                    this.dialogVisible = false;
                 }
             },
             changeStart(value) {

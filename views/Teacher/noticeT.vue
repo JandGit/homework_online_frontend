@@ -54,8 +54,10 @@
             }).then( response => {
                 if(response.data.result == 0) {
                     this.notices = response.data.data.notices;
-                }
-                else {
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
+                } else {
                     this.$notify({
                         title: '未知错误！',
                         type: 'success',
@@ -69,6 +71,9 @@
             }).then( response => {
                 if(response.data.result == 0) {
                     this.g_all_class = response.data.data.class_list;
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
                 } else {
                     this.$message({
                         message: '未知错误！',
@@ -89,7 +94,8 @@
                 g_all_class: [],
                 userName: '',
                 className: [],
-                dialogVisible: false
+                dialogVisible: false,
+                ERRCODE_RELOGIN: 1
             }
         },
         computed: {
@@ -124,8 +130,10 @@
                     }).then( response => {
                         if(response.data.errno == 200) {
                             row.content = value;
-                        }
-                        else {
+                        } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                            this.$message("登录信息过期，请重新登录");
+                            this.$router.replace("/");
+                        } else {
                             this.$notify({
                                 title: '未知错误！',
                                 type: 'success',
@@ -153,6 +161,9 @@
                     }).then( response => {
                         if(response.data.result == 0){
                             this.notices.splice(index,1)
+                        } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                            this.$message("登录信息过期，请重新登录");
+                            this.$router.replace("/");
                         } else {
                             this.$message({
                                 message: '未知错误！',
@@ -186,8 +197,10 @@
                             message: '发布公告成功',
                             type: 'success'
                         })
-                    }
-                    else {
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
+                    } else {
                         this.$notify({
                             title: '未知错误！',
                             type: 'success',

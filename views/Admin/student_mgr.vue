@@ -81,13 +81,11 @@
                 if (response.data.result == 0) {
                     this.students = response.data.data.students;
                     this.queryStudents = this.students.slice(0, this.pageSize);
-                }
-                else {
-                    this.$notify({
-                        title: '未知错误！',
-                        type: 'success',
-                        offset: 100
-                    })
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
+                } else {
+                    this.$message("数据查询失败，请稍后重试")
                 }
             });
             this.$http({
@@ -102,6 +100,9 @@
                         var class_name = this.all_class_list[i].class_name;
                         this.all_class_map.set(class_id, class_name);
                     }
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
                 } else {
                     this.$notify({
                         title: '获取数据错误！',
@@ -131,7 +132,8 @@
                 all_class_map: new Map(),
                 dialogFormVisible: false,
                 searchStudent: "",
-                pageSize: 10
+                pageSize: 10,
+                ERRCODE_RELOGIN: 1
             }
         },
         computed: {
@@ -159,6 +161,9 @@
                     if (response.data.result == 0) {
                         this.students = response.data.data.students;
                         this.queryStudents = this.students.slice(0, this.pageSize);
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
                     } else {
                         this.$notify({
                             title: '获取数据错误！',
@@ -194,6 +199,9 @@
                             this.alterRow.class_info.class_name = this.all_class_map.get(
                                 this.alterRow.class_info.class_id);
                             this.dialogFormVisible = false;
+                        } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                            this.$message("登录信息过期，请重新登录");
+                            this.$router.replace("/");
                         } else {
                             this.$notify({
                                 title: '未知错误！',
@@ -224,6 +232,9 @@
                         if (response.data.result == 0) {
                             this.students.splice(index, 1),
                                 this.queryStudents.splice(index, 1)
+                        } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                            this.$message("登录信息过期，请重新登录");
+                            this.$router.replace("/");
                         } else {
                             this.$notify({
                                 title: '未知错误！',
@@ -262,6 +273,9 @@
                                 stu_name: "",
                                 class_info: {class_id: undefined, class_name: ""}
                             }
+                        } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                            this.$message("登录信息过期，请重新登录");
+                            this.$router.replace("/");
                         } else {
                             this.$notify({
                                 title: '未知错误！',

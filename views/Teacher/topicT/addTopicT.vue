@@ -101,15 +101,13 @@
                 }, {
                     value: 'free_resp',
                     label: '问答题'
-                }, {
-                    value: 'file',
-                    label: '作图题'
                 }],
                 fileList: [],
                 action: "//jsonplaceholder.typicode.com/posts/",
                 show: false,
                 dialogVisible: false,
-                checkList: []
+                checkList: [],
+                ERRCODE_RELOGIN: 1
             }
         },
         methods: {
@@ -219,6 +217,9 @@
                             type: 'success',
                             offset: 100
                         });
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
                     } else {
                         this.$notify({
                             title: '创建失败，请重试',

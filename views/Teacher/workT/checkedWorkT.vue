@@ -44,13 +44,15 @@
                  if(response.data.result === 0) {
                     this.checkedWorkListT = response.data.data.homeworks;
                     this.checkedWorkListPageT = this.checkedWorkListT.slice(0,this.pageSize)
-                } else {
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                     this.$message("登录信息过期，请重新登录");
+                     this.$router.replace("/");
+                 } else {
                     this.$notify({
                         title: "未知错误！",
                         type: "success",
                         offset: 100
                     });
-                    this.$router.replace("/");
                 }
             })
         },
@@ -58,7 +60,8 @@
             return {
                 checkedWorkListT: [],
                 checkedWorkListPageT: [],
-                pageSize: 10
+                pageSize: 10,
+                ERRCODE_RELOGIN: 1
             }
         },
         methods: {

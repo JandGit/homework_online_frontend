@@ -78,6 +78,11 @@
                 if(response.data.result == 0) {
                     this.topics = response.data.data.questions;
                     this.topicsPage = this.topics.slice(0,this.pageSize)
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
+                } else {
+                    this.$message("数据获取失败，请刷新重试");
                 }
             })
 
@@ -107,8 +112,10 @@
             }).then( (response) => {
                 if(response.data.result == 0) {
                     this.workListT = response.data.data.homeworks
-                }
-                else {
+                } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                    this.$message("登录信息过期，请重新登录");
+                    this.$router.replace("/");
+                } else {
                     this.$notify({
                         title: '未知错误！',
                         type: 'success',
@@ -127,7 +134,8 @@
                 topicsPage: [],
                 workId: [],
                 dialogVisible: false,
-                pageSize: 10
+                pageSize: 10,
+                ERRCODE_RELOGIN: 1
             }
         },
         computed: {
@@ -164,9 +172,14 @@
                         searchValue: this.searchValue
                     }
                 }).then((response) => {
-                    if(response.data.errno == 200) {
+                    if(response.data.result == 0) {
                         this.topics = response.data.data;
                         this.topicsPage = this.topics.slice(0,this.pageSize)
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
+                    } else {
+                        this.$message("数据获取失败");
                     }
                 })
             },
@@ -189,8 +202,10 @@
                                     type: 'success',
                                     offset: 100
                                 })
-                            }
-                            else {
+                            } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                                this.$message("登录信息过期，请重新登录");
+                                this.$router.replace("/");
+                            } else {
                                 this.$notify({
                                     title: '未知错误！',
                                     type: 'info',
@@ -225,8 +240,10 @@
                         if(response.data.result == 0){
                             this.topics.splice(index,1);
                             this.topicsPage.splice(index,1);
-                        }
-                        else {
+                        } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                            this.$message("登录信息过期，请重新登录");
+                            this.$router.replace("/");
+                        } else {
                             this.$notify({
                                 title: '未知错误！',
                                 type: 'info',
