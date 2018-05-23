@@ -6,7 +6,6 @@
               <el-table-column label="发布人" prop="author"></el-table-column>
               <el-table-column label="操作">
                   <template scope="scope">
-                      <el-button size="small" type="success" v-on:click="alterNoticeT(scope.$index, scope.row)">编辑</el-button>
                       <el-button size="small" type="danger" v-on:click="deleteNoticeT(scope.$index, scope.row)">删除</el-button>
                   </template>
               </el-table-column>
@@ -113,41 +112,6 @@
             }
         },
         methods:{
-            alterNoticeT: function(index,row) {
-                this.$prompt('请输入要修改的内容','提示',{
-                    inputValue: row.content,
-                }).then(({value}) => {
-                    this.$http({
-                        method: 'POST',
-                        url: '/api/teacher/alterNoticeT',
-                        headers: {
-                            'Authorization': 'Bearer '+ localStorage.token
-                        },
-                        body: {
-                            "id": row.id,
-                            "content": value
-                        }
-                    }).then( response => {
-                        if(response.data.errno == 200) {
-                            row.content = value;
-                        } else if (response.data.result == this.ERRCODE_RELOGIN) {
-                            this.$message("登录信息过期，请重新登录");
-                            this.$router.replace("/");
-                        } else {
-                            this.$notify({
-                                title: '未知错误！',
-                                type: 'success',
-                                offset: 100
-                            })
-                        }        
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '取消输入！'
-                    })
-                })
-            },
             deleteNoticeT: function(index,row) {
                 this.$confirm('此操作将永久删除该公告，是否继续？','提示',{
                     type: 'warning'

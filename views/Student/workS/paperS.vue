@@ -4,11 +4,11 @@
             <span>{{this.paper.title}}</span>
             <br><br>
             <!-- <span style="text-align: left; display: block; float: left">{{this.audiences}}</span> -->
-            <span style="text-align: right; display: block;">{{this.paper.author}}</span>
+            <span style="text-align: right; display: block;">命题老师：{{this.paper.author}}</span>
             <br>
             <div class="topics">
                 <topic v-for="(topic, index) in paper.questions"
-                       v-bind:show_right_anwer="true"
+                       v-bind:show_right_answer="paper.status == 'checked'"
                        v-bind:editable="!(paper.status == 'checked')"
                        v-on:listen="doing"
                        :key="index"
@@ -19,7 +19,7 @@
                        :status="topic.status"
                        :choices="topic.answer"
                        :stu_answer="topic.stu_answer"
-                       :right_answer="undefined"
+                       :right_answer="topic.right_answer"
                 >
                 </topic>
                 <br><br>

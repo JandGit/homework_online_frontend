@@ -39,7 +39,7 @@ Vue.prototype.$http = axios;
 Vue.prototype.$http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$http.defaults.baseURL = 'http://120.78.91.156/';
 
-// Vue.prototype.$http.defaults.withCredentials = true
+Vue.prototype.$http.defaults.withCredentials = true;
 
 Vue.config.productionTip = false;
 
