@@ -8,10 +8,10 @@
                           size="large"></el-input>
                 <br><br>
                 <el-switch class="switch" :width=85 v-model="mark" on-text="记住用户" off-text=""
-                           on-color="#13CE66" :change="save()"></el-switch>
+                           on-color="#ACACAC" off-color="#d2d2d2" :change="save()"></el-switch>
             </div>
             <br><br><br><br>
-            <el-button class="button" size="large" type="success" v-on:click="login()">登录</el-button>
+            <el-button class="button" size="large" v-on:click="login()">登录</el-button>
         </div>
     </div>
 </template>
@@ -148,7 +148,10 @@
     }
 
     .button {
+        border:1px solid #232323;
         width: 200px;
+        color: #232323;
+        background-color: white;
     }
 
     .switch {

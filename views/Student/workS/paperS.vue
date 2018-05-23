@@ -10,16 +10,10 @@
                 <topic v-for="(topic, index) in paper.questions"
                        v-bind:show_right_answer="paper.status == 'checked'"
                        v-bind:editable="!(paper.status == 'checked')"
+                       v-bind:prop_ques_obj="topic"
                        v-on:listen="doing"
                        :key="index"
                        :index="index"
-                       :ques_id="topic.ques_id"
-                       :ques_content="topic.ques_content"
-                       :ques_type="topic.ques_type"
-                       :status="topic.status"
-                       :choices="topic.answer"
-                       :stu_answer="topic.stu_answer"
-                       :right_answer="topic.right_answer"
                 >
                 </topic>
                 <br><br>
@@ -127,7 +121,10 @@
                             offset: 100
                         });
                         this.$router.back();
-                    } else {
+                    } else if (response.data.result == this.ERRCODE_RELOGIN) {
+                        this.$message("登录信息过期，请重新登录");
+                        this.$router.replace("/");
+                    }else {
                         this.$notify({
                             title: "未知错误！",
                             type: "success",
